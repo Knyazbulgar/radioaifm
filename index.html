@@ -722,8 +722,11 @@ body {
       <form id="contactForm" onsubmit="submitForm(event)">
         <div class="form-row">
           <div class="form-field"><label for="name">Ваше имя</label><input type="text" id="name" name="name" placeholder="Укажите ваше имя" required></div>
-<div class="form-field"><label for="email">E-mail</label><input type="email" id="email" name="email" placeholder="Введите корректный e-mail" required></div>
-        <div class="form-field" style="margin-bottom:1rem"><label for="message">Сообщение</label><textarea id="message" name="message" placeholder="Напишите сообщение" required></textarea></div>
+<div class="form-row">
+  <div class="form-field"><label for="name">Ваше имя</label><input type="text" id="name" name="name" placeholder="Укажите ваше имя" required></div>
+  <div class="form-field"><label for="email">E-mail</label><input type="email" id="email" name="email" placeholder="Введите корректный e-mail" required></div>
+</div>
+<div class="form-field" style="margin-bottom:1rem"><label for="message">Сообщение</label><textarea id="message" name="message" placeholder="Напишите сообщение" required></textarea></div>
         <button type="submit" class="btn-submit">Отправить</button>
         <div class="form-success" id="formSuccess">✅ Сообщение отправлено! Мы ответим в ближайшее время.</div>
       </form>
@@ -848,7 +851,7 @@ const message = document.getElementById('message').value.trim();
       btn.textContent = 'Отправить';
     }
   }
-  }  // --- Название текущей песни ---
+    // --- Название текущей песни ---
   const METADATA_URL = 'https://radio.aifm.su/api/nowplaying/aifm';
   const nowPlayingEl = document.getElementById('nowPlaying');
 
