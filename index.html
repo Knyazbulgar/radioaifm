@@ -721,10 +721,9 @@ body {
       <h3 style="margin-bottom:1rem;font-size:1rem;">Написать нам</h3>
       <form id="contactForm" onsubmit="submitForm(event)">
         <div class="form-row">
-          <div class="form-field"><label for="fname">Ваше имя</label><input type="text" id="fname" placeholder="Укажите ваше имя" required></div>
-          <div class="form-field"><label for="femail">E-mail</label><input type="email" id="femail" placeholder="Введите корректный e-mail" required></div>
-        </div>
-        <div class="form-field" style="margin-bottom:1rem"><label for="fmsg">Сообщение</label><textarea id="fmsg" placeholder="Напишите сообщение" required></textarea></div>
+          <div class="form-field"><label for="name">Ваше имя</label><input type="text" id="name" name="name" placeholder="Укажите ваше имя" required></div>
+<div class="form-field"><label for="email">E-mail</label><input type="email" id="email" name="email" placeholder="Введите корректный e-mail" required></div>
+        <div class="form-field" style="margin-bottom:1rem"><label for="message">Сообщение</label><textarea id="message" name="message" placeholder="Напишите сообщение" required></textarea></div>
         <button type="submit" class="btn-submit">Отправить</button>
         <div class="form-success" id="formSuccess">✅ Сообщение отправлено! Мы ответим в ближайшее время.</div>
       </form>
