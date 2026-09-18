@@ -1,0 +1,43 @@
+{
+  "id": "/",
+  "name": "Radio AI FM",
+  "short_name": "AI FM",
+  "description": "Radio AI FM — музыка, технологии и голос нового поколения. Слушайте эфир 24/7.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0c1018",
+  "theme_color": "#0c1018",
+  "lang": "ru",
+  "dir": "ltr",
+  "categories": ["music", "entertainment"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Слушать эфир",
+      "short_name": "Эфир",
+      "url": "./index.html?play=1",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+    }
+  ]
+}
