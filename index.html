@@ -870,6 +870,9 @@ const message = document.getElementById('message').value.trim();
       const text   = artist && title ? `${artist} — ${title}`
                    : title || artist || '';
       nowPlayingEl.textContent = text;
+            // Обновление обложки
+      const artUrl = data.now_playing?.song?.art;
+      if (artUrl) document.querySelector('.player-avatar').style.backgroundImage = `url(${artUrl})`;
     } catch {
       // нет соединения — оставляем пустым
     }
