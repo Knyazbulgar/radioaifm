@@ -879,6 +879,72 @@ const message = document.getElementById('message').value.trim();
 
   updateNowPlaying();
   setInterval(updateNowPlaying, 15000);
+    // --- Подсветка текущей программы ---
+  function updateScheduleBadges() {
+    const now = new Date();
+    const moscowOffset = 3 * 60; // МСК = UTC+3
+    const localOffset = now.getTimezoneOffset();
+    const moscowTime = new Date(now.getTime() + (moscowOffset + localOffset) * 60000);
+    const hours = moscowTime.getHours();
+    const minutes = moscowTime.getMinutes();
+    const currentMinutes = hours * 60 + minutes;
+
+    const schedule = [
+      { start: 7 * 60, name: 'Утренний запуск' },
+      { start: 11 * 60, name: 'Дневной поток' },
+      { start: 15 * 60, name: 'AI Микс' },
+      { start: 19 * 60, name: 'Вечерняя атмосфера' },
+      { start: 23 * 60, name: 'Ночная волна' },
+      { start: 3 * 60, name: 'Cosmos Late Night' } // 03:00 следующего дня
+    ];
+
+    // Найти текущую и следующую программу
+    let currentIdx = -1;
+    for (let i = 0; i < schedule.length; i++) {
+      const nextIdx = (i + 1) % schedule.length;
+      const start = schedule[i].start;
+      const end = schedule[nextIdx].start;
+
+      // Если программа начинается после полуночи (03:00 = 180 минут)
+      if (start < 7 * 60 && currentMinutes >= start && currentMinutes < 7 * 60) {
+        currentIdx = i;
+        break;
+      }
+      // Обычное время (07:00–23:00)
+      if (currentMinutes >= start && (end > start ? currentMinutes < end : true)) {
+        currentIdx = i;
+        break;
+      }
+    }
+
+    // Если текущая программа не найдена (ночь после 23:00 до 03:00)
+    if (currentIdx === -1 && currentMinutes >= 23 * 60) {
+      currentIdx = 4; // Ночная волна (23:00)
+    }
+
+    const nextIdx = currentIdx !== -1 ? (currentIdx + 1) % schedule.length : 0;
+
+    // Убрать все бейджи
+    document.querySelectorAll('.schedule-item .badge-live, .schedule-item .badge-soon').forEach(b => b.remove());
+
+    // Добавить бейджи
+    const items = document.querySelectorAll('.schedule-item');
+    if (currentIdx !== -1 && items[currentIdx]) {
+      const badge = document.createElement('span');
+      badge.className = 'badge-live';
+      badge.textContent = 'В ЭФИРЕ';
+      items[currentIdx].appendChild(badge);
+    }
+    if (items[nextIdx]) {
+      const badge = document.createElement('span');
+      badge.className = 'badge-soon';
+      badge.textContent = 'СКОРО';
+      items[nextIdx].appendChild(badge);
+    }
+  }
+
+  updateScheduleBadges();
+  setInterval(updateScheduleBadges, 60000); // обновление каждую минуту
 </script>
  </body>
 </html>
