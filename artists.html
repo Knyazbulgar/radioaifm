@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для артистов — Radio AI FM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .heading {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #c8c8ff;
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background-color: #11111f;
+            border: 1px solid #25253a;
+            transition: all 0.2s ease;
+        }
+
+        .accent {
+            color: #00f0ff;
+        }
+
+        .list-item {
+            position: relative;
+            padding-left: 1.25rem;
+        }
+        
+        .list-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #00f0ff;
+        }
+    </style>
+</head>
+<body class="bg-[#0a0a14] text-gray-200">
+
+    <div class="max-w-[860px] mx-auto px-6 pt-14 pb-20">
+
+        <!-- Заголовок -->
+        <div class="mb-10">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-2.5 h-2.5 bg-[#00f0ff] rounded-full"></div>
+                <span class="text-[#00f0ff] text-sm font-medium tracking-[1px]">RADIO AI FM</span>
+            </div>
+            <h1 class="heading text-5xl tracking-tighter">Для артистов</h1>
+            <p class="mt-4 text-xl text-gray-400 max-w-md">
+                Radio AI FM размещает треки независимых авторов на платной основе.
+            </p>
+        </div>
+
+        <!-- Цена -->
+        <div class="card rounded-3xl p-8 mb-12">
+            <div class="flex items-end gap-2">
+                <span class="text-6xl font-semibold tracking-tighter">1000 ₽</span>
+            </div>
+            <p class="mt-1 text-lg text-gray-400">Размещение трека на 15 дней</p>
+        </div>
+
+        <!-- Условия размещения -->
+        <div class="mb-12">
+            <h2 class="section-title">Условия размещения</h2>
+            <div class="card rounded-3xl p-8">
+                <ul class="space-y-4 text-[15px]">
+                    <li class="list-item">Трек транслируется в эфире <span class="font-medium text-white">3–4 раза в сутки</span></li>
+                    <li class="list-item">Срок ротации — <span class="font-medium text-white">15 дней</span> с момента оплаты</li>
+                    <li class="list-item">Продление ротации возможно за <span class="font-medium text-white">1000 рублей</span> ещё на 15 дней</li>
+                    <li class="list-item">Оплата производится <span class="font-medium text-white">только после одобрения</span> трека редакцией</li>
+                    <li class="list-item">Способы оплаты: <span class="font-medium text-white">СБП</span> или <span class="font-medium text-white">расчётный счёт</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Требования к треку -->
+        <div class="mb-12">
+            <h2 class="section-title">Требования к треку</h2>
+            <div class="card rounded-3xl p-8">
+                <ul class="space-y-3.5 text-[15px]">
+                    <li class="list-item"><strong>Язык:</strong> только русский</li>
+                    <li class="list-item"><strong>Версия:</strong> только Clean (без ненормативной лексики)</li>
+                    <li class="list-item">Трек не должен содержать пропаганду насилия, наркотиков, экстремизма и другого запрещённого контента</li>
+                    <li class="list-item">Формат: <strong>WAV</strong> (предпочтительно) или <strong>MP3 320 kbps</strong></li>
+                    <li class="list-item">Длительность: от 2:30 до 6:00</li>
+                    <li class="list-item"><strong>Текст песни</strong> — обязательно присылайте</li>
+                    <li class="list-item"><strong>Жанр</strong> — обязательно указать</li>
+                </ul>
+                <div class="mt-6 pt-6 border-t border-[#25253a] text-sm text-gray-400">
+                    При желании автор может самостоятельно добавить в трек графическую информацию или другие данные для эфира.
+                </div>
+            </div>
+        </div>
+
+        <!-- Как отправить -->
+        <div class="mb-12">
+            <h2 class="section-title">Как отправить трек на рассмотрение</h2>
+            <div class="card rounded-3xl p-8">
+                <p class="mb-5">Пришлите заявку на почту <a href="mailto:radioaifm@mail.ru" class="text-[#00f0ff] hover:underline font-medium">radioaifm@mail.ru</a></p>
+                
+                <div class="text-sm text-gray-400 mb-4">В письме обязательно укажите:</div>
+                <ul class="space-y-2.5 text-[15px]">
+                    <li class="list-item">Исполнитель (как должно звучать в эфире)</li>
+                    <li class="list-item">Название трека</li>
+                    <li class="list-item">Жанр</li>
+                    <li class="list-item">Ссылку на файл (если больше 25 МБ)</li>
+                    <li class="list-item"><strong>Текст песни</strong></li>
+                    <li class="list-item">Подтверждение правообладания</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Правообладание -->
+        <div class="mb-12">
+            <h2 class="section-title">Подтверждение правообладания</h2>
+            <div class="card rounded-3xl p-8 text-[15px]">
+                <p class="text-gray-300">Отправляя трек, вы подтверждаете, что:</p>
+                <ul class="mt-4 space-y-2.5">
+                    <li class="list-item">Являетесь автором и/или правообладателем трека, <strong>или</strong></li>
+                    <li class="list-item">Имеете письменное разрешение правообладателя на размещение трека в эфире.</li>
+                </ul>
+                <p class="mt-5 text-sm text-gray-400">Мы оставляем за собой право запросить подтверждение прав.</p>
+            </div>
+        </div>
+
+        <!-- Процесс -->
+        <div class="mb-12">
+            <h2 class="section-title">Процесс размещения</h2>
+            <div class="card rounded-3xl p-8">
+                <ol class="space-y-5 text-[15px]">
+                    <li class="flex gap-4"><span class="font-semibold text-[#00f0ff] w-5">1.</span> Вы присылаете трек</li>
+                    <li class="flex gap-4"><span class="font-semibold text-[#00f0ff] w-5">2.</span> Мы рассматриваем заявку (до 14 дней)</li>
+                    <li class="flex gap-4"><span class="font-semibold text-[#00f0ff] w-5">3.</span> При положительном решении присылаем реквизиты для оплаты</li>
+                    <li class="flex gap-4"><span class="font-semibold text-[#00f0ff] w-5">4.</span> После поступления оплаты трек добавляется в ротацию в течение 3 рабочих дней</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Важно -->
+        <div>
+            <h2 class="section-title">Важно</h2>
+            <div class="card rounded-3xl p-8 text-[15px]">
+                <ul class="space-y-4 text-gray-300">
+                    <li class="list-item">Отправка трека <span class="font-medium text-white">не гарантирует</span> его размещение. Решение о ротации принимает редакция Radio AI FM.</li>
+                    <li class="list-item"><span class="font-medium text-white">Возврат денежных средств</span> после оплаты не производится.</li>
+                    <li class="list-item">Статистика прослушиваний (количество эфиров) <span class="font-medium text-white">не предоставляется</span>.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="text-center text-xs text-gray-500 pb-10">
+        Radio AI FM © 2026
+    </div>
+
+</body>
+</html>
