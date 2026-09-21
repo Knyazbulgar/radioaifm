@@ -1,950 +1,1055 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%2310274f'/%3E%3Ccircle cx='32' cy='32' r='29' fill='none' stroke='%23255a9e' stroke-width='2'/%3E%3Ccircle cx='32' cy='22' r='2.5' fill='%2339a0f4'/%3E%3Crect x='30.8' y='24' width='2.4' height='14' fill='%2339a0f4'/%3E%3Cpath d='M20 30 A14 14 0 0 1 44 30' fill='none' stroke='%2339a0f4' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M15 23 A20 20 0 0 1 49 23' fill='none' stroke='%2339a0f4' stroke-width='2.5' stroke-linecap='round'/%3E%3Ctext x='32' y='56' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='20' fill='%23ffffff'%3EAI%3C/text%3E%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Radio AI FM — Музыка будущего</title>
 <style>
-  :root {
-    --bg: oklch(14% 0.01 260);
-    --surface: oklch(20% 0.015 260);
-    --surface-raised: oklch(25% 0.015 260);
-    --border: oklch(32% 0.02 260);
-    --text: oklch(92% 0.01 260);
-    --muted: oklch(62% 0.015 260);
-    --accent: oklch(65% 0.22 30);
-    --accent-dim: oklch(55% 0.18 30);
-    --live: oklch(60% 0.2 145);
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: system-ui, -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-  }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { color: var(--accent-dim); }
+:root {
+--bg: oklch(14% 0.01 260);
+--surface: oklch(20% 0.015 260);
+--surface-raised: oklch(25% 0.015 260);
+--border: oklch(32% 0.02 260);
+--text: oklch(92% 0.01 260);
+--muted: oklch(62% 0.015 260);
+--accent: oklch(65% 0.22 30);
+--accent-dim: oklch(55% 0.18 30);
+--live: oklch(60% 0.2 145);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+font-family: system-ui, -apple-system, sans-serif;
+background: var(--bg);
+color: var(--text);
+line-height: 1.6;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-dim); }
 
-  /* NAV */
-  nav {
-    position: sticky; top: 0; z-index: 100;
-    background: oklch(14% 0.01 260 / 0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 2rem; height: 60px;
-  }
-  .nav-logo { font-weight: 700; font-size: 1.1rem; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
-  .nav-links { display: flex; gap: 1.5rem; list-style: none; }
-  .nav-links a { color: var(--muted); font-size: 0.9rem; transition: color 0.15s; }
-  .nav-links a:hover { color: var(--text); }
+/* NAV */
+nav {
+position: sticky; top: 0; z-index: 100;
+background: oklch(14% 0.01 260 / 0.92);
+backdrop-filter: blur(12px);
+border-bottom: 1px solid var(--border);
+display: flex; align-items: center; justify-content: space-between;
+padding: 0 2rem; height: 60px;
+}
+.nav-logo { font-weight: 700; font-size: 1.1rem; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
+.nav-links { display: flex; gap: 1.5rem; list-style: none; }
+.nav-links a { color: var(--muted); font-size: 0.9rem; transition: color 0.15s; }
+.nav-links a:hover { color: var(--text); }
 
-  /* HERO */
-  .hero {
-    min-height: 92vh;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center; padding: 4rem 1.5rem;
-    background: radial-gradient(ellipse 80% 60% at 50% 30%, oklch(30% 0.06 30 / 0.25) 0%, transparent 70%);
-  }
-  .live-badge {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    background: oklch(60% 0.2 145 / 0.15);
-    border: 1px solid var(--live);
-    color: var(--live); font-size: 0.75rem; font-weight: 700;
-    padding: 0.3rem 0.8rem; border-radius: 99px; letter-spacing: 0.08em;
-    margin-bottom: 1.5rem;
-  }
-  .live-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--live); animation: pulse 1.8s ease-in-out infinite;
-  }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-  h1 { font-size: clamp(2.2rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
-  h1 span { color: var(--accent); }
-  .hero-sub { font-size: clamp(1rem, 2vw, 1.2rem); color: var(--muted); max-width: 540px; margin-bottom: 2.5rem; }
-
-  /* PLAYER */
-  .player-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem 2rem;
-    width: min(440px, 100%);
-    display: flex; flex-direction: column; gap: 1rem;
-  }
-  .player-info { display: flex; align-items: center; gap: 0.75rem; }
-  .player-avatar {
-    width: 48px; height: 48px; border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent-dim), oklch(40% 0.18 260));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem; flex-shrink: 0;
-  }
-  .player-track { font-size: 0.85rem; }
-  .player-track strong { display: block; font-size: 0.95rem; }
-  .player-track span { color: var(--muted); }
-  .player-controls { display: flex; align-items: center; gap: 1rem; }
-  .play-btn {
-    width: 48px; height: 48px; border-radius: 50%;
-    background: var(--accent); border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem; color: white; flex-shrink: 0;
-    transition: background 0.15s, transform 0.1s;
-  }
-  .play-btn:hover { background: var(--accent-dim); }
-  .play-btn:active { transform: scale(0.95); }
-  .play-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-  .volume-row { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--muted); }
-  input[type=range] { flex: 1; accent-color: var(--accent); }
-  .status-text { font-size: 0.8rem; color: var(--muted); text-align: center; min-height: 1.2em; }
-
-  /* STATS */
-  .stats { display: flex; gap: 2rem; margin-top: 2rem; }
-  .stat { text-align: center; }
-  .stat strong { display: block; font-size: 1.4rem; color: var(--accent); }
-  .stat span { font-size: 0.8rem; color: var(--muted); }
-
-  /* SECTIONS */
-  section { padding: 5rem 1.5rem; max-width: 900px; margin: 0 auto; }
-  h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.25rem; }
-  .section-sub { color: var(--muted); margin-bottom: 2.5rem; font-size: 0.95rem; }
-
-  /* SCHEDULE */
-  .schedule-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .schedule-item {
-    display: flex; align-items: center; gap: 1rem;
-    padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-  }
-  .schedule-item:last-child { border-bottom: none; }
-  .schedule-item:hover { background: var(--surface-raised); }
-  .sched-time { font-size: 0.85rem; color: var(--muted); width: 3.5rem; flex-shrink: 0; font-variant-numeric: tabular-nums; }
-  .sched-info { flex: 1; }
-  .sched-info strong { display: block; font-size: 0.95rem; }
-  .sched-info span { font-size: 0.8rem; color: var(--muted); }
-  .badge-live { font-size: 0.7rem; font-weight: 700; background: var(--live); color: oklch(14% 0.01 260); padding: 0.15rem 0.5rem; border-radius: 99px; }
-  .badge-soon { font-size: 0.7rem; font-weight: 600; background: var(--surface-raised); color: var(--muted); padding: 0.15rem 0.5rem; border-radius: 99px; }
-
-  /* NEWS */
-  .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
-  .news-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
-  .news-tag { font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
-  .news-date { font-size: 0.75rem; color: var(--muted); }
-  .news-card h3 { font-size: 1rem; }
-  .news-card p { font-size: 0.875rem; color: var(--muted); }
-
-  /* TEAM */
-  .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
-  .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem 1.25rem; text-align: center; }
-  .avatar { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 0.75rem; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; background: var(--surface-raised); }
-  .team-card h3 { font-size: 1rem; margin-bottom: 0.15rem; }
-  .team-card .role { font-size: 0.8rem; color: var(--accent); margin-bottom: 0.4rem; }
-  .team-card p { font-size: 0.8rem; color: var(--muted); }
-
-  /* CONTACTS */
-  .contacts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
-  .contact-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; align-items: flex-start; gap: 0.75rem; }
-  .contact-icon { font-size: 1.4rem; flex-shrink: 0; }
-  .contact-card strong { display: block; font-size: 0.85rem; margin-bottom: 0.25rem; }
-  .contact-card span, .contact-card a { font-size: 0.875rem; color: var(--muted); }
-  .contact-form { grid-column: 1 / -1; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-  .form-field { display: flex; flex-direction: column; gap: 0.4rem; }
-  .form-field label { font-size: 0.85rem; color: var(--muted); }
-  .form-field input, .form-field textarea {
-    background: var(--surface-raised); border: 1px solid var(--border);
-    border-radius: 8px; padding: 0.6rem 0.75rem; color: var(--text);
-    font-family: inherit; font-size: 0.9rem;
-    transition: border-color 0.15s;
-  }
-  .form-field input:focus, .form-field textarea:focus { outline: none; border-color: var(--accent); }
-  .form-field textarea { resize: vertical; min-height: 100px; }
-  .btn-submit {
-    background: var(--accent); color: white; border: none;
-    padding: 0.65rem 1.5rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600;
-    cursor: pointer; transition: background 0.15s;
-  }
-  .btn-submit:hover { background: var(--accent-dim); }
-  .form-success { display: none; color: var(--live); font-size: 0.9rem; margin-top: 0.75rem; }
-  .ai-note { font-size: 0.75rem; color: var(--muted); text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
-
-  /* FOOTER */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 2.5rem 1.5rem;
-    display: grid; grid-template-columns: 1fr auto 1fr; align-items: start;
-    gap: 2rem; max-width: 900px; margin: 0 auto;
-    font-size: 0.85rem; color: var(--muted);
-  }
-  .footer-links { display: flex; flex-direction: column; gap: 0.4rem; }
-  .footer-copy { text-align: right; }
-  .footer-copy p:first-child { color: var(--text); font-weight: 600; margin-bottom: 0.25rem; }
-
-  @media (max-width: 640px) {
-    nav { padding: 0 1rem; }
-    .nav-links { display: none; }
-    .form-row { grid-template-columns: 1fr; }
-    footer { grid-template-columns: 1fr; text-align: left; }
-    .footer-copy { text-align: left; }
-  }/* Исправление нового верхнего блока */
+/* HERO */
 .hero {
-  position: relative !important;
-  z-index: 100 !important;
-  width: min(1350px, calc(100% - 40px)) !important;
-  min-height: 700px !important;
-  margin: 0 auto 40px !important;
-  overflow: hidden !important;
-  isolation: isolate !important;
+min-height: 92vh;
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+text-align: center; padding: 4rem 1.5rem;
+background: radial-gradient(ellipse 80% 60% at 50% 30%, oklch(30% 0.06 30 / 0.25) 0%, transparent 70%);
+}
+.live-badge {
+display: inline-flex; align-items: center; gap: 0.4rem;
+background: oklch(60% 0.2 145 / 0.15);
+border: 1px solid var(--live);
+color: var(--live); font-size: 0.75rem; font-weight: 700;
+padding: 0.3rem 0.8rem; border-radius: 99px; letter-spacing: 0.08em;
+margin-bottom: 1.5rem;
+}
+.live-dot {
+width: 7px; height: 7px; border-radius: 50%;
+background: var(--live); animation: pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+h1 { font-size: clamp(2.2rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
+h1 span { color: var(--accent); }
+.hero-sub { font-size: clamp(1rem, 2vw, 1.2rem); color: var(--muted); max-width: 540px; margin-bottom: 2.5rem; }
+
+/* PLAYER */
+.player-card {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 16px;
+padding: 1.5rem 2rem;
+width: min(440px, 100%);
+display: flex; flex-direction: column; gap: 1rem;
+}
+.player-info { display: flex; align-items: center; gap: 0.75rem; }
+.player-avatar {
+width: 48px; height: 48px; border-radius: 10px;
+background: linear-gradient(135deg, var(--accent-dim), oklch(40% 0.18 260));
+display: flex; align-items: center; justify-content: center;
+font-size: 1.4rem; flex-shrink: 0;
+}
+.player-track { font-size: 0.85rem; }
+.player-track strong { display: block; font-size: 0.95rem; }
+.player-track span { color: var(--muted); }
+.player-controls { display: flex; align-items: center; gap: 1rem; }
+.play-btn {
+width: 48px; height: 48px; border-radius: 50%;
+background: var(--accent); border: none; cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+font-size: 1.2rem; color: white; flex-shrink: 0;
+transition: background 0.15s, transform 0.1s;
+}
+.play-btn:hover { background: var(--accent-dim); }
+.play-btn:active { transform: scale(0.95); }
+.play-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.volume-row { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--muted); }
+input[type=range] { flex: 1; accent-color: var(--accent); }
+.status-text { font-size: 0.8rem; color: var(--muted); text-align: center; min-height: 1.2em; }
+
+/* STATS */
+.stats { display: flex; gap: 2rem; margin-top: 2rem; }
+.stat { text-align: center; }
+.stat strong { display: block; font-size: 1.4rem; color: var(--accent); }
+.stat span { font-size: 0.8rem; color: var(--muted); }
+
+/* SECTIONS */
+section { padding: 5rem 1.5rem; max-width: 900px; margin: 0 auto; }
+h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.25rem; }
+.section-sub { color: var(--muted); margin-bottom: 2.5rem; font-size: 0.95rem; }
+
+/* SCHEDULE */
+.schedule-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.schedule-item {
+display: flex; align-items: center; gap: 1rem;
+padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+transition: background 0.15s;
+}
+.schedule-item:last-child { border-bottom: none; }
+.schedule-item:hover { background: var(--surface-raised); }
+.sched-time { font-size: 0.85rem; color: var(--muted); width: 3.5rem; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.sched-info { flex: 1; }
+.sched-info strong { display: block; font-size: 0.95rem; }
+.sched-info span { font-size: 0.8rem; color: var(--muted); }
+.badge-live { font-size: 0.7rem; font-weight: 700; background: var(--live); color: oklch(14% 0.01 260); padding: 0.15rem 0.5rem; border-radius: 99px; }
+.badge-soon { font-size: 0.7rem; font-weight: 600; background: var(--surface-raised); color: var(--muted); padding: 0.15rem 0.5rem; border-radius: 99px; }
+
+/* NEWS */
+.news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+.news-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.news-tag { font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
+.news-date { font-size: 0.75rem; color: var(--muted); }
+.news-card h3 { font-size: 1rem; }
+.news-card p { font-size: 0.875rem; color: var(--muted); }
+
+/* TEAM */
+.team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+.team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem 1.25rem; text-align: center; }
+.avatar { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 0.75rem; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; background: var(--surface-raised); }
+.team-card h3 { font-size: 1rem; margin-bottom: 0.15rem; }
+.team-card .role { font-size: 0.8rem; color: var(--accent); margin-bottom: 0.4rem; }
+.team-card p { font-size: 0.8rem; color: var(--muted); }
+
+/* CONTACTS */
+.contacts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+.contact-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; align-items: flex-start; gap: 0.75rem; }
+.contact-icon { font-size: 1.4rem; flex-shrink: 0; }
+.contact-card strong { display: block; font-size: 0.85rem; margin-bottom: 0.25rem; }
+.contact-card span, .contact-card a { font-size: 0.875rem; color: var(--muted); }
+.contact-form { grid-column: 1 / -1; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.form-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-field label { font-size: 0.85rem; color: var(--muted); }
+.form-field input, .form-field textarea {
+background: var(--surface-raised); border: 1px solid var(--border);
+border-radius: 8px; padding: 0.6rem 0.75rem; color: var(--text);
+font-family: inherit; font-size: 0.9rem;
+transition: border-color 0.15s;
+}
+.form-field input:focus, .form-field textarea:focus { outline: none; border-color: var(--accent); }
+.form-field textarea { resize: vertical; min-height: 100px; }
+.btn-submit {
+background: var(--accent); color: white; border: none;
+padding: 0.65rem 1.5rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600;
+cursor: pointer; transition: background 0.15s;
+}
+.btn-submit:hover { background: var(--accent-dim); }
+.form-success { display: none; color: var(--live); font-size: 0.9rem; margin-top: 0.75rem; }
+.ai-note { font-size: 0.75rem; color: var(--muted); text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+
+/* FOOTER */
+footer {
+border-top: 1px solid var(--border);
+padding: 2.5rem 1.5rem;
+display: grid; grid-template-columns: 1fr auto 1fr; align-items: start;
+gap: 2rem; max-width: 900px; margin: 0 auto;
+font-size: 0.85rem; color: var(--muted);
+}
+.footer-links { display: flex; flex-direction: column; gap: 0.4rem; }
+.footer-copy { text-align: right; }
+.footer-copy p:first-child { color: var(--text); font-weight: 600; margin-bottom: 0.25rem; }
+
+@media (max-width: 640px) {
+nav { padding: 0 1rem; }
+.nav-links { display: none; }
+.form-row { grid-template-columns: 1fr; }
+footer { grid-template-columns: 1fr; text-align: left; }
+.footer-copy { text-align: left; }
+}/* Исправление нового верхнего блока */
+.hero {
+position: relative !important;
+z-index: 100 !important;
+width: min(1350px, calc(100% - 40px)) !important;
+min-height: 700px !important;
+margin: 0 auto 40px !important;
+overflow: hidden !important;
+isolation: isolate !important;
 }
 
 /* Содержимое нового блока должно быть поверх картинки */
 .hero .hero-overlay {
-  z-index: 0 !important;
+z-index: 0 !important;
 }
 
 .hero .hero-content {
-  position: relative !important;
-  z-index: 1 !important;
+position: relative !important;
+z-index: 1 !important;
 }
 
 /* Старые элементы не должны накладываться на новый блок */
 .hero ~ * {
-  position: relative;
-  z-index: 1;
+position: relative;
+z-index: 1;
 }
 
 /* Убираем горизонтальную прокрутку */
 html,
 body {
-  overflow-x: hidden !important;
+overflow-x: hidden !important;
 }.radio-hero {
-  position: relative !important;
-  box-sizing: border-box !important;
-  display: flex !important;
-  align-items: center !important;
-  width: min(1350px, calc(100% - 40px)) !important;
-  min-height: 430px !important;
-  margin: 0 auto 40px !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  border-radius: 22px !important;
-  background: #050e27 !important;
-  text-align: left !important;
+position: relative !important;
+box-sizing: border-box !important;
+display: flex !important;
+align-items: center !important;
+width: min(1350px, calc(100% - 40px)) !important;
+min-height: 430px !important;
+margin: 0 auto 40px !important;
+padding: 0 !important;
+overflow: hidden !important;
+border-radius: 22px !important;
+background: #050e27 !important;
+text-align: left !important;
 }
 
 .radio-hero__image {
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 0 !important;
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  object-position: center !important;
+position: absolute !important;
+inset: 0 !important;
+z-index: 0 !important;
+display: block !important;
+width: 100% !important;
+height: 100% !important;
+object-fit: cover !important;
+object-position: center !important;
 }
 
 .radio-hero__overlay {
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 1 !important;
-  pointer-events: none !important;
-  background: linear-gradient(
-    90deg,
-    rgba(5, 14, 39, 0.96) 0%,
-    rgba(5, 14, 39, 0.78) 38%,
-    rgba(5, 14, 39, 0.25) 72%,
-    rgba(5, 14, 39, 0.08) 100%
-  ) !important;
+position: absolute !important;
+inset: 0 !important;
+z-index: 1 !important;
+pointer-events: none !important;
+background: linear-gradient(
+90deg,
+rgba(5, 14, 39, 0.96) 0%,
+rgba(5, 14, 39, 0.78) 38%,
+rgba(5, 14, 39, 0.25) 72%,
+rgba(5, 14, 39, 0.08) 100%
+) !important;
 }
 
 .radio-hero__content {
-  position: relative !important;
-  z-index: 2 !important;
-  max-width: 590px !important;
-  margin: 0 !important;
-  padding: 56px !important;
-  color: #fff !important;
-  text-align: left !important;
+position: relative !important;
+z-index: 2 !important;
+max-width: 590px !important;
+margin: 0 !important;
+padding: 56px !important;
+color: #fff !important;
+text-align: left !important;
 }
 
 .radio-hero__label {
-  margin: 0 0 14px !important;
-  color: #54b8ff !important;
-  font-size: 13px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.18em !important;
-  text-transform: uppercase !important;
+margin: 0 0 14px !important;
+color: #54b8ff !important;
+font-size: 13px !important;
+font-weight: 700 !important;
+letter-spacing: 0.18em !important;
+text-transform: uppercase !important;
 }
 
 .radio-hero__title {
-  margin: 0 !important;
-  color: #fff !important;
-  font-size: clamp(42px, 7vw, 82px) !important;
-  font-weight: 800 !important;
-  line-height: 0.95 !important;
-  letter-spacing: -0.04em !important;
-  text-align: left !important;
-  text-shadow: 0 0 28px rgba(65, 177, 255, 0.35) !important;
+margin: 0 !important;
+color: #fff !important;
+font-size: clamp(42px, 7vw, 82px) !important;
+font-weight: 800 !important;
+line-height: 0.95 !important;
+letter-spacing: -0.04em !important;
+text-align: left !important;
+text-shadow: 0 0 28px rgba(65, 177, 255, 0.35) !important;
 }
 
 .radio-hero__text {
-  max-width: 420px !important;
-  margin: 22px 0 28px !important;
-  color: #c6d8f4 !important;
-  font-size: 18px !important;
-  line-height: 1.5 !important;
-  text-align: left !important;
+max-width: 420px !important;
+margin: 22px 0 28px !important;
+color: #c6d8f4 !important;
+font-size: 18px !important;
+line-height: 1.5 !important;
+text-align: left !important;
 }
 
 .radio-hero__button {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 9px !important;
-  padding: 13px 22px !important;
-  border-radius: 999px !important;
-  background: #39a8f5 !important;
-  color: #06132f !important;
-  font-weight: 700 !important;
-  text-decoration: none !important;
-  box-shadow: 0 0 24px rgba(57, 168, 245, 0.35) !important;
+display: inline-flex !important;
+align-items: center !important;
+gap: 9px !important;
+padding: 13px 22px !important;
+border-radius: 999px !important;
+background: #39a8f5 !important;
+color: #06132f !important;
+font-weight: 700 !important;
+text-decoration: none !important;
+box-shadow: 0 0 24px rgba(57, 168, 245, 0.35) !important;
 }
 
 .radio-hero__button:hover {
-  background: #75cbff !important;
+background: #75cbff !important;
 }
 
 @media (max-width: 700px) {
-  .radio-hero {
-    width: calc(100% - 24px) !important;
-    min-height: 510px !important;
-    align-items: flex-end !important;
-    border-radius: 16px !important;
-  }
+.radio-hero {
+width: calc(100% - 24px) !important;
+min-height: 510px !important;
+align-items: flex-end !important;
+border-radius: 16px !important;
+}
 
-  .radio-hero__image {
-    object-position: 67% center !important;
-  }
+.radio-hero__image {
+object-position: 67% center !important;
+}
 
-  .radio-hero__overlay {
-    background: linear-gradient(
-      180deg,
-      rgba(5, 14, 39, 0.15) 0%,
-      rgba(5, 14, 39, 0.55) 43%,
-      rgba(5, 14, 39, 0.97) 78%
-    ) !important;
-  }
+.radio-hero__overlay {
+background: linear-gradient(
+180deg,
+rgba(5, 14, 39, 0.15) 0%,
+rgba(5, 14, 39, 0.55) 43%,
+rgba(5, 14, 39, 0.97) 78%
+) !important;
+}
 
-  .radio-hero__content {
-    padding: 28px 22px !important;
-  }
+.radio-hero__content {
+padding: 28px 22px !important;
+}
 
-  .radio-hero__title {
-    font-size: 52px !important;
-  }
+.radio-hero__title {
+font-size: 52px !important;
+}
 
-  .radio-hero__text {
-    font-size: 16px !important; } }
+.radio-hero__text {
+font-size: 16px !important; } }
 
 /* ── Рекламная секция ────────────────────────────── */
 .ad-section {
-  width: 100%;
-  padding: 48px 0;
+width: 100%;
+padding: 48px 0;
 }
 
 .ad-section__inner {
-  width: min(1350px, calc(100% - 40px));
-  margin: 0 auto;
+width: min(1350px, calc(100% - 40px));
+margin: 0 auto;
 }
 
 .ad-section__label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #888;
-  text-align: center;
-  margin: 0 0 24px;
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: #888;
+text-align: center;
+margin: 0 0 24px;
 }
 
 .ad-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 16px;
 }
 
 /* Широкий баннер — на всю ширину */
 .ad-banner--wide {
-  grid-column: 1 / -1;
+grid-column: 1 / -1;
 }
 
 .ad-banner {
-  border: 1px dashed rgba(84,184,255,0.35);
-  border-radius: 12px;
-  background: rgba(84,184,255,0.04);
-  transition: border-color 0.2s, background 0.2s;
+border: 1px dashed rgba(84,184,255,0.35);
+border-radius: 12px;
+background: rgba(84,184,255,0.04);
+transition: border-color 0.2s, background 0.2s;
 }
 
 .ad-banner:hover {
-  border-color: rgba(84,184,255,0.65);
-  background: rgba(84,184,255,0.08);
+border-color: rgba(84,184,255,0.65);
+background: rgba(84,184,255,0.08);
 }
 
 /* Горизонтальный лayout */
 .ad-banner__inner {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 22px 28px;
+display: flex;
+align-items: center;
+gap: 20px;
+padding: 22px 28px;
 }
 
 /* Вертикальный layout для квадратов */
 .ad-banner__inner--col {
-  flex-direction: column;
-  text-align: center;
-  padding: 36px 28px;
+flex-direction: column;
+text-align: center;
+padding: 36px 28px;
 }
 
 .ad-banner__icon {
-  font-size: 28px;
-  flex-shrink: 0;
+font-size: 28px;
+flex-shrink: 0;
 }
 
 .ad-banner__title {
-  color: #c6d8f4;
-  font-size: 15px;
-  font-weight: 600;
-  margin: 0 0 4px;
+color: #c6d8f4;
+font-size: 15px;
+font-weight: 600;
+margin: 0 0 4px;
 }
 
 .ad-banner__size {
-  color: #888;
-  font-size: 12px;
-  margin: 0;
+color: #888;
+font-size: 12px;
+margin: 0;
 }
 
 .ad-banner__cta {
-  margin-left: auto;
-  flex-shrink: 0;
-  display: inline-block;
-  padding: 9px 22px;
-  border: 1px solid rgba(84,184,255,0.5);
-  border-radius: 8px;
-  color: #54b8ff;
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.2s, color 0.2s;
+margin-left: auto;
+flex-shrink: 0;
+display: inline-block;
+padding: 9px 22px;
+border: 1px solid rgba(84,184,255,0.5);
+border-radius: 8px;
+color: #54b8ff;
+font-size: 13px;
+font-weight: 600;
+text-decoration: none;
+transition: background 0.2s, color 0.2s;
 }
 
 .ad-banner__inner--col .ad-banner__cta {
-  margin-left: 0;
-  margin-top: 12px;
+margin-left: 0;
+margin-top: 12px;
 }
 
 .ad-banner__cta:hover {
-  background: #54b8ff;
-  color: #0a0f1e;
+background: #54b8ff;
+color: #0a0f1e;
 }
 
-/* Мобильные */
+/* Мобильные /
 @media (max-width: 640px) {
-  .ad-grid {
-    grid-template-columns: 1fr;
-  }
-  .ad-banner--wide {
-    grid-column: 1;
-  }
-  .ad-banner__inner {
-    flex-wrap: wrap;
-  }
-  .ad-banner__cta {
-    margin-left: 0;
-  }
-}/* ── Живой баннер (реальный партнёр) ─────────────── */
+.ad-grid {
+grid-template-columns: 1fr;
+}
+.ad-banner--wide {
+grid-column: 1;
+}
+.ad-banner__inner {
+flex-wrap: wrap;
+}
+.ad-banner__cta {
+margin-left: 0;
+}
+}/ ── Живой баннер (реальный партнёр) ─────────────── */
 .ad-banner--live {
-  border-style: solid;
-  border-color: rgba(84,184,255,0.5);
-  border-width: 2px;
-  overflow: hidden;
-  background: rgba(84,184,255,0.08);
-  box-shadow: 0 0 24px rgba(84,184,255,0.15);
+border-style: solid;
+border-color: rgba(84,184,255,0.5);
+border-width: 2px;
+overflow: hidden;
+background: rgba(84,184,255,0.08);
+box-shadow: 0 0 24px rgba(84,184,255,0.15);
 }
 
 .ad-banner__link {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  position: relative;
+display: block;
+text-decoration: none;
+color: inherit;
+position: relative;
 }
 
 .ad-banner__img {
-  width: 100%;
-  max-height: 120px;
-  object-fit: cover;
-  display: block;
-  border-radius: 10px;
-  transition: opacity 0.2s;
+width: 100%;
+max-height: 120px;
+object-fit: cover;
+display: block;
+border-radius: 10px;
+transition: opacity 0.2s;
 }
 
 .ad-banner__link:hover .ad-banner__img {
-  opacity: 0.85;
+opacity: 0.85;
 }
 
 .ad-banner--live {
-  position: relative;
+position: relative;
 }
 
 .ad-banner__caption {
-  position: absolute;
-  bottom: 8px;
-  right: 12px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
+position: absolute;
+bottom: 8px;
+right: 12px;
+display: flex;
+gap: 8px;
+align-items: center;
 }
 
 .ad-banner__partner-name {
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+color: #fff;
+font-size: 14px;
+font-weight: 700;
+text-shadow: 0 1px 6px rgba(0,0,0,0.8);
 }
 
 .ad-banner__ad-mark {
-  font-size: 10px;
-  padding: 2px 7px;
-  border-radius: 4px;
-  background: rgba(0,0,0,0.65);
-  color: #54b8ff;
-  letter-spacing: 0.08em;
-  font-weight: 600;
+font-size: 10px;
+padding: 2px 7px;
+border-radius: 4px;
+background: rgba(0,0,0,0.65);
+color: #54b8ff;
+letter-spacing: 0.08em;
+font-weight: 600;
 }.team-card .avatar {
-    width: 100%;
-    height: 320px;
-    overflow: hidden;
-    border-radius: 12px;
+width: 100%;
+height: 320px;
+overflow: hidden;
+border-radius: 12px;
 }
 
 .team-card .avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+width: 100%;
+height: 100%;
+object-fit: cover;
+display: block;
 }
+
+/* --- Новые вспомогательные стили для секции "Для артистов" --- */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+.artists-wrap { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
+.section-title { font-size: 1.25rem; color: var(--accent); margin-bottom: 0.75rem; }
+.list-item { position: relative; padding-left: 18px; margin-bottom: 0.6rem; color: var(--text); }
+.list-item::before { content: "•"; position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 700; }
+
 </style>
 </head>
 <body>
 
 <section class="radio-hero">
-  <img class="radio-hero__image" src="./hero.jpg" alt="Radio AI FM">
+<img class="radio-hero__image" src="./hero.jpg" alt="Radio AI FM">
 
-  <div class="radio-hero__overlay"></div>
+<div class="radio-hero__overlay"></div>
 
-  <div class="radio-hero__content">
-    <div class="radio-hero__label">AI-РАДИО БУДУЩЕГО</div>
+<div class="radio-hero__content">
+<div class="radio-hero__label">AI-РАДИО БУДУЩЕГО</div>
 
-    <h1 class="radio-hero__title">Radio AI FM</h1>
+<h1 class="radio-hero__title">Radio AI FM</h1>
 
-    <p class="radio-hero__text">
-      Музыка, технологии и голос нового поколения
-    </p>
-
-    
-  </div>
+<p class="radio-hero__text">
+  Музыка, технологии и голос нового поколения
+</p>
+</div>
 </section>
 
 <nav>
 
-
-  <div class="nav-logo">📡 Radio AI FM</div>
-  <ul class="nav-links">
-    <li><a href="#schedule">Расписание</a></li>
-    <li><a href="#news">Новости</a></li>
-    <li><a href="#team">Ведущие</a></li>
-    <li><a href="#contacts">Контакты</a></li>
-  </ul>
+<div class="nav-logo">📡 Radio AI FM</div>
+<ul class="nav-links">
+<li><a href="#schedule">Расписание</a></li>
+<li><a href="#news">Новости</a></li>
+<li><a href="#team">Ведущие</a></li>
+<li><a href="#contacts">Контакты</a></li>
+<li><a href="#artists">Для артистов</a></li> <!-- добавлена ссылка -->
+</ul>
 </nav>
 
 <section class="hero">
-  <div class="live-badge"><div class="live-dot"></div> В ЭФИРЕ</div>
-  <h1>Музыка<br>из <span>будущего</span></h1>
-  <p class="hero-sub">Radio AI FM — первая независимая радиостанция в России, созданная полностью на основе ИИ. Музыка, атмосфера и программы нового поколения.</p>
+<div class="live-badge"><div class="live-dot"></div> В ЭФИРЕ</div>
+<h1>Музыка<br>из <span>будущего</span></h1>
+<p class="hero-sub">Radio AI FM — первая независимая радиостанция в России, созданная полностью на основе ИИ. Музыка, атмосфера и программы нового поколения.</p>
 
-  <div class="player-card" role="region" aria-label="Плеер радио">
-    <div class="player-info">
-      <div class="player-avatar" aria-hidden="true">🎵</div>
-            <div class="player-track">
-        <strong id="track-title">Radio AI FM</strong>
-        <span id="track-status"></span>
-        <span id="nowPlaying" style="display:block;font-size:0.78rem;color:oklch(62% 0.015 260);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px;margin-top:2px;"></span>
-      </div>
-    </div>
-    <div class="player-controls">
-      <button class="play-btn" id="playBtn" aria-label="Воспроизвести" onclick="togglePlay()">▶</button>
-      <div class="volume-row" style="flex:1">
-        <span aria-hidden="true">🔈</span>
-        <input type="range" id="volume" min="0" max="100" value="80" aria-label="Громкость" oninput="setVolume(this.value)">
-        <span id="vol-label">80%</span>
-      </div>
-    </div>
-    <div class="status-text" id="statusText" aria-live="polite"></div>
-  </div>
+<div class="player-card" role="region" aria-label="Плеер радио">
+<div class="player-info">
+<div class="player-avatar" aria-hidden="true">🎵</div>
+<div class="player-track">
+<strong id="track-title">Radio AI FM</strong>
+<span id="track-status"></span>
+<span id="nowPlaying" style="display:block;font-size:0.78rem;color:oklch(62% 0.015 260);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px;margin-top:2px;"></span>
+</div>
+</div>
+<div class="player-controls">
+<button class="play-btn" id="playBtn" aria-label="Воспроизвести" onclick="togglePlay()">▶</button>
+<div class="volume-row" style="flex:1">
+<span aria-hidden="true">🔈</span>
+<input type="range" id="volume" min="0" max="100" value="80" aria-label="Громкость" oninput="setVolume(this.value)">
+<span id="vol-label">80%</span>
+</div>
+</div>
+<div class="status-text" id="statusText" aria-live="polite"></div>
+</div>
 
-  <div class="stats">
-    <div class="stat"><strong>24/7</strong><span>Вещание</span></div>
-    <div class="stat"><strong>192k</strong><span>Битрейт</span></div>
-    <div class="stat"><strong>AI</strong><span>Ведущие</span></div>
-    <div class="stat"><strong>∞</strong><span>Музыки</span></div>
-  </div>
+<div class="stats">
+<div class="stat"><strong>24/7</strong><span>Вещание</span></div>
+<div class="stat"><strong>192k</strong><span>Битрейт</span></div>
+<div class="stat"><strong>AI</strong><span>Ведущие</span></div>
+<div class="stat"><strong>∞</strong><span>Музыки</span></div>
+</div>
 </section></div></section>
 
 <!-- РЕКЛАМНЫЕ БАННЕРЫ -->
 <section class="ad-section">
-  <div class="ad-section__inner">
-    <p class="ad-section__label">Рекламные места</p>
-    <div class="ad-grid">
+<div class="ad-section__inner">
+<p class="ad-section__label">Рекламные места</p>
+<div class="ad-grid">
 
-      <!-- РЕАЛЬНЫЙ РЕКЛАМОДАТЕЛЬ -->
+  <!-- РЕАЛЬНЫЙ РЕКЛАМОДАТЕЛЬ -->
 <div class="ad-banner ad-banner--wide ad-banner--live">
-  <a class="ad-banner__link" href="https://vk.ru/pesnibulgara" target="_blank" rel="noopener sponsored">
-    <img class="ad-banner__img" src="./ads/partner1.jpg" alt="Реклама: Песни Булгара">
-    <div class="ad-banner__caption">
-      <span class="ad-banner__partner-name">Песни Булгара</span>
-      <span class="ad-banner__ad-mark">Реклама</span>
-    </div>
-  </a>
+<a class="ad-banner__link" href="https://vk.ru/pesnibulgara" target="_blank" rel="noopener sponsored">
+<img class="ad-banner__img" src="./ads/partner1.jpg" alt="Реклама: Песни Булгара">
+<div class="ad-banner__caption">
+<span class="ad-banner__partner-name">Песни Булгара</span>
+<span class="ad-banner__ad-mark">Реклама</span>
+</div>
+</a>
 </div>
 
-
-      <div class="ad-banner ad-banner--square">
-        <div class="ad-banner__inner ad-banner__inner--col">
-          <span class="ad-banner__icon">📣</span>
-          <p class="ad-banner__title">Ваша реклама</p>
-          <p class="ad-banner__size">300 × 250 — Medium Rectangle</p>
-          <a class="ad-banner__cta" href="mailto:radioaifm@mail.ru">Заказать</a>
-        </div>
-      </div>
-
-      <div class="ad-banner ad-banner--square">
-        <div class="ad-banner__inner ad-banner__inner--col">
-          <span class="ad-banner__icon">🎙️</span>
-          <p class="ad-banner__title">Реклама на Radio AI FM</p>
-          <p class="ad-banner__size">300 × 250 — Medium Rectangle</p>
-          <a class="ad-banner__cta" href="mailto:radioaifm@mail.ru">Заказать</a>
-        </div>
-      </div>
-
-      <div class="ad-banner ad-banner--wide">
-        <div class="ad-banner__inner">
-          <span class="ad-banner__icon">🚀</span>
-          <div>
-            <p class="ad-banner__title">Рекламируйтесь на аудиторию Radio AI FM</p>
-            <p class="ad-banner__size">728 × 90 — Лидерборд</p>
-          </div>
-          <a class="ad-banner__cta" href="mailto:radioaifm@mail.ru">Заказать</a>
-        </div>
-      </div>
-
+  <div class="ad-banner ad-banner--square">
+    <div class="ad-banner__inner ad-banner__inner--col">
+      <span class="ad-banner__icon">📣</span>
+      <p class="ad-banner__title">Ваша реклама</p>
+      <p class="ad-banner__size">300 × 250 — Medium Rectangle</p>
+      <a class="ad-banner__cta" href="mailto:radioaifm@mail.ru">Заказать</a>
     </div>
   </div>
-</section>
 
-<section id="schedule">
-
-<section id="schedule">
-  <h2>Эфирная сетка</h2>
-  <p class="section-sub">Расписание</p>
-  <div class="schedule-list" role="list">
-    <div class="schedule-item" role="listitem"><span class="sched-time">07:00</span><div class="sched-info"><strong>Утренний запуск</strong><span>Алекс Волна</span></div></div>
-    <div class="schedule-item" role="listitem"><span class="sched-time">11:00</span><div class="sched-info"><strong>Дневной поток</strong><span>Мария Эфир</span></div></div>
-    <div class="schedule-item" role="listitem"><span class="sched-time">15:00</span><div class="sched-info"><strong>AI Микс</strong><span>Вика AI</span></div></div>
-    <div class="schedule-item" role="listitem"><span class="sched-time">19:00</span><div class="sched-info"><strong>Вечерняя атмосфера</strong><span>Алекс Волна</span></div></div>
-    <div class="schedule-item" role="listitem"><span class="sched-time">23:00</span><div class="sched-info"><strong>Ночная волна</strong><span>Мария Эфир</span></div></div>
-    <div class="schedule-item" role="listitem"><span class="sched-time">03:00</span><div class="sched-info"><strong>Cosmos Late Night</strong><span>Вика AI</span></div></div>
+  <div class="ad-banner ad-banner--square">
+    <div class="ad-banner__inner ad-banner__inner--col">
+      <span class="ad-banner__icon">🎙️</span>
+      <p class="ad-banner__title">Реклама на Radio AI FM</p>
+      <p class="ad-banner__size">300 × 250 — Medium Rectangle</p>
+      <a class="ad-banner__cta" href="mailto:radioaifm@mail.ru">Заказать</a>
+    </div>
   </div>
+
+  <div class="ad-banner ad-banner--wide">
+    <div class="ad-banner__inner">
+      <span class="ad-banner__icon">🚀</span>
+      <div>
+        <p class="ad-banner__title">Рекламируйтесь на аудиторию Radio AI FM</p>
+        <p class="ad-banner__size">728 × 90 — Лидерборд</p>
+      </div>
+      <a class="ad-banner__cta" href="mailto:radioaifm@mail.ru">Заказать</a>
+    </div>
+  </div>
+
+</div>
+</div>
 </section>
- 
+
+<!-- ========== Раздел: Для артистов ========== -->
+<section id="artists" class="artists-wrap">
+<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.8rem">
+<div style="width:10px;height:10px;border-radius:50%;background:var(--accent)"></div>
+<div style="color:var(--accent);font-weight:700;font-size:0.95rem;letter-spacing:0.08em">RADIO AI FM</div>
+</div>
+
+<h2 style="margin-bottom:0.5rem">Для артистов</h2>
+<p style="color:var(--muted);margin-bottom:1.2rem">Radio AI FM размещает треки независимых авторов на платной основе.</p>
+
+<!-- Цена -->
+<div class="card" style="margin-bottom:1rem;">
+<div style="display:flex;align-items:end;gap:0.5rem">
+<div style="font-size:2.25rem;font-weight:700">1000 ₽</div>
+<div style="color:var(--muted);margin-left:6px">за один трек</div>
+</div>
+<div style="color:var(--muted);margin-top:6px">Размещение на 15 дней</div>
+</div>
+
+<!-- Условия размещения -->
+<div style="margin-top:1.25rem;margin-bottom:1.25rem;">
+<div class="section-title">Условия размещения</div>
+<div class="card">
+<div class="list-item">Трек транслируется в эфире <strong style="color:var(--text)">3–4 раза в сутки</strong></div>
+<div class="list-item">Срок ротации — <strong style="color:var(--text)">15 дней</strong> с момента оплаты</div>
+<div class="list-item">Продление ротации возможно за <strong style="color:var(--text)">1000 рублей</strong> ещё на 15 дней</div>
+<div class="list-item">Оплата производится <strong style="color:var(--text)">только после одобрения</strong> трека редакцией</div>
+<div class="list-item">Способы оплаты: <strong style="color:var(--text)">СБП</strong> или <strong style="color:var(--text)">расчётный счёт</strong></div>
+</div>
+</div>
+
+<!-- Требования -->
+<div style="margin-bottom:1.25rem;">
+<div class="section-title">Требования к треку</div>
+<div class="card">
+<div class="list-item"><strong>Язык:</strong> только русский</div>
+<div class="list-item"><strong>Версия:</strong> только Clean (без ненормативной лексики)</div>
+<div class="list-item">Трек не должен содержать пропаганду насилия, наркотиков, экстремизма и другого запрещённого контента</div>
+<div class="list-item">Формат: <strong>WAV</strong> (предпочтительно) или <strong>MP3 320 kbps</strong></div>
+<div class="list-item">Длительность: от 2:30 до 6:00</div>
+<div class="list-item"><strong>Текст песни</strong> — обязательно присылайте</div>
+<div class="list-item"><strong>Жанр</strong> — обязательно указать</div>
+<div style="margin-top:0.75rem;color:var(--muted);font-size:0.92rem">Автор может самостоятельно добавить в трек графическую или иную информацию для эфира.</div>
+</div>
+</div>
+
+<!-- Как отправить -->
+<div style="margin-bottom:1.25rem;">
+<div class="section-title">Как отправить трек на рассмотрение</div>
+<div class="card">
+<p style="margin-bottom:0.6rem">Отправляйте заявку на почту <a href="mailto:radioaifm@mail.ru">radioaifm@mail.ru</a></p>
+<div style="color:var(--muted);margin-bottom:0.6rem">В письме обязательно укажите:</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div class="list-item">Исполнитель (как должно звучать в эфире)</div>
+<div class="list-item">Название трека</div>
+<div class="list-item">Жанр</div>
+<div class="list-item">Ссылка на файл (если >25 МБ)</div>
+<div class="list-item"><strong>Текст песни</strong></div>
+<div class="list-item">Подтверждение правообладания</div>
+</div>
+</div>
+</div>
+
+<!-- Подтверждение прав -->
+<div style="margin-bottom:1.25rem;">
+<div class="section-title">Подтверждение правообладания</div>
+<div class="card">
+<div style="color:var(--muted)">Отправляя трек, вы подтверждаете, что:</div>
+<div style="display:flex;flex-direction:column;gap:6px;margin-top:0.75rem">
+<div class="list-item">Вы являетесь автором и/или правообладателем трека, <strong>или</strong></div>
+<div class="list-item">Имеете письменное разрешение правообладателя на размещение трека в эфире.</div>
+</div>
+<div style="margin-top:0.8rem;color:var(--muted);font-size:0.9rem">Мы оставляем за собой право запросить подтверждающие документы (переписку, договор и т.д.).</div>
+</div>
+</div>
+
+<!-- Процесс -->
+<div style="margin-bottom:1.25rem;">
+<div class="section-title">Процесс размещения</div>
+<div class="card">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div><strong>1.</strong> Вы присылаете трек</div>
+<div><strong>2.</strong> Мы рассматриваем заявку (до 14 дней)</div>
+<div><strong>3.</strong> При одобрении присылаем реквизиты для оплаты</div>
+<div><strong>4.</strong> После оплаты трек добавляется в ротацию в течение 3 рабочих дней</div>
+</div>
+</div>
+</div>
+
+<!-- Важно -->
+<div>
+<div class="section-title">Важно</div>
+<div class="card">
+<div class="list-item">Отправка трека <strong>не гарантирует</strong> его размещение</div>
+<div class="list-item"><strong>Возврат средств</strong> после оплаты не производится</div>
+<div class="list-item">Статистика прослушиваний не предоставляется</div>
+</div>
+</div>
+</section>
+<!-- ========== /Раздел: Для артистов ========== -->
+
+<section id="schedule">
+
+<section id="schedule">
+<h2>Эфирная сетка</h2>
+<p class="section-sub">Расписание</p>
+<div class="schedule-list" role="list">
+<div class="schedule-item" role="listitem"><span class="sched-time">07:00</span><div class="sched-info"><strong>Утренний запуск</strong><span>Алекс Волна</span></div></div>
+<div class="schedule-item" role="listitem"><span class="sched-time">11:00</span><div class="sched-info"><strong>Дневной поток</strong><span>Мария Эфир</span></div></div>
+<div class="schedule-item" role="listitem"><span class="sched-time">15:00</span><div class="sched-info"><strong>AI Микс</strong><span>Вика AI</span></div></div>
+<div class="schedule-item" role="listitem"><span class="sched-time">19:00</span><div class="sched-info"><strong>Вечерняя атмосфера</strong><span>Алекс Волна</span></div></div>
+<div class="schedule-item" role="listitem"><span class="sched-time">23:00</span><div class="sched-info"><strong>Ночная волна</strong><span>Мария Эфир</span></div></div>
+<div class="schedule-item" role="listitem"><span class="sched-time">03:00</span><div class="sched-info"><strong>Cosmos Late Night</strong><span>Вика AI</span></div></div>
+</div>
+</section>
+
 <section id="news">
-  <h2>Последние события</h2>
-  <p class="section-sub">Новости</p>
-  <div class="news-grid">
-    <div class="news-card"><span class="news-tag">🚀 Новость</span><time class="news-date">01.01.2025</time><h3>Radio AI FM официально запущена!</h3><p>Первая независимая радиостанция в России, созданная полностью на основе ИИ, начинает вещание.</p></div>
-    <div class="news-card"><span class="news-tag">🎙️ Анонс</span><time class="news-date">05.01.2025</time><h3>Новые программы в январе</h3><p>Добавляем новые тематические программы: Cosmos Late Night, AI Микс и Утренний запуск с AI-ведущими.</p></div>
-    <div class="news-card"><span class="news-tag">✨ Обновление</span><time class="news-date">10.01.2025</time><h3>Улучшено качество вещания</h3><p>Поток стабильнее, задержка меньше, качество звука — 192 kbps MP3.</p></div>
-  </div>
+<h2>Последние события</h2>
+<p class="section-sub">Новости</p>
+<div class="news-grid">
+<div class="news-card"><span class="news-tag">🚀 Новость</span><time class="news-date">01.01.2025</time><h3>Radio AI FM официально запущена!</h3><p>Первая независимая радиостанция в России, созданная полностью на основе ИИ, начинает вещание.</p></div>
+<div class="news-card"><span class="news-tag">🎙️ Анонс</span><time class="news-date">05.01.2025</time><h3>Новые программы в январе</h3><p>Добавляем новые тематические программы: Cosmos Late Night, AI Микс и Утренний запуск с AI-ведущими.</p></div>
+<div class="news-card"><span class="news-tag">✨ Обновление</span><time class="news-date">10.01.2025</time><h3>Улучшено качество вещания</h3><p>Поток стабильнее, задержка меньше, качество звука — 192 kbps MP3.</p></div>
+</div>
 </section>
 
 <section id="team">
-  <h2>Команда</h2>
-  <p class="section-sub">Ведущие</p>
-  <div class="team-grid">
-    <div class="team-card">
-      <div class="avatar"><img src="/team/alex.jpg" alt="Алекс Волна" onerror="this.parentElement.textContent='АВ'"></div>
-      <h3>Алекс Волна</h3>
-      <div class="role">Утренний ведущий</div>
-      <p>Энергичный голос Radio AI FM. Будит слушателей каждое утро с 7:00. Специализируется на электронной и современной поп-музыке.</p>
-    </div>
-    <div class="team-card">
-      <div class="avatar"><img src="/team/maria.jpg" alt="Мария Эфир" onerror="this.parentElement.textContent='МЭ'"></div>
-      <h3>Мария Эфир</h3>
-      <div class="role">Дневной и вечерний диджей</div>
-      <p>Мягкий и приятный голос дневного и вечернего эфира. Создаёт атмосферу уюта и расслабления.</p>
-    </div>
-    <div class="team-card">
-      <div class="avatar"><img src="/team/max.jpg" alt="Макс Частота" onerror="this.parentElement.textContent='МЧ'"></div>
-      <h3>Макс Частота</h3>
-      <div class="role">Ведущий новостей</div>
-      <p>Чёткий и уверенный голос новостного эфира. Держит слушателей в курсе главных событий дня — коротко, точно и без воды.</p>
-    </div>
-    <div class="team-card">
-      <div class="avatar"><img src="/team/vika.jpg" alt="Вика AI" onerror="this.parentElement.textContent='ВА'"></div>
-      <h3>Вика AI</h3>
-      <div class="role">AI-ведущая · Ночной эфир</div>
-      <p>Виртуальная ведущая на базе искусственного интеллекта. Ведёт ночной эфир и AI Микс — спокойно, атмосферно, без пауз.</p>
-    </div>
-  </div>
-  <p class="ai-note">Ведущие Radio AI FM созданы с помощью технологий искусственного интеллекта.</p>
-</section>
+<h2>Команда</h2>
+<p class="section-sub">Ведущие</p>
+<div class="team-grid">
+<div class="team-card">
+<div class="avatar"><img src="/team/alex.jpg" alt="Алекс Волна" onerror="this.parentElement.textContent='АВ'"></div>
+<h3>Алекс Волна</h3>
+<div class="role">Утренний ведущий</div>
+<p>Энергичный голос Radio AI FM. Будит слушателей каждое утро с 7:00. Специализируется на электронной и современной поп-музыке.</p>
+</div>
+<div class="team-card">
+<div class="avatar"><img src="/team/maria.jpg" alt="Мария Эфир" onerror="this.parentElement.textContent='МЭ'"></div>
+<h3>Мария Эфир</h3>
+<div class="role">Дневной и вечерний диджей</div>
+<p>Мягкий и приятный голос дневного и вечернего эфира. Создаёт атмосферу уюта и расслабления.</p>
+</div>
+<div class="team-card">
+<div class="avatar"><img src="/team/max.jpg" alt="Макс Частота" onerror="this.parentElement.textContent='МЧ'"></div>
+<h3>Макс Частота</h3>
+<div class="role">Ведущий новостей</div>
+<p>Чёткий и уверенный голос новостного эфира. Держит слушателей в курсе главных событий дня — коротко, точно и без воды.</p>
+</div>
+<div class="team-card">
+<div class="avatar"><img src="/team/vika.jpg" alt="Вика AI" onerror="this.parentElement.textContent='ВА'"></div>
+<h3>Вика AI</h3>
+<div class="role">AI-ведущая · Ночной эфир</div>
+<p>Виртуальная ведущая на базе искусственного интеллекта. Ведёт ночной эфир и AI Микс — спокойно, атмосферно, без пауз.</p>
+</div>
+</div>
+<p class="ai-note">Ведущие Radio AI FM созданы с помощью технологий искусственного интеллекта.</p>
 </section>
 
 <section id="contacts">
-  <h2>Свяжитесь с нами</h2>
-  <p class="section-sub">Контакты</p>
-  <div class="contacts-grid">
-    <div class="contact-card"><div class="contact-icon">✉️</div><div><strong>E-mail</strong><span>radioaifm@mail.ru</span></div></div>
-    <div class="contact-card"><div class="contact-icon">📱</div><div><strong>Telegram</strong><span><a href="https://t.me/radioaifm" target="_blank" rel="noopener">@radioaifm</a></span></div></div>
-    <div class="contact-card"><div class="contact-icon">🔗</div><div><strong>Слушать онлайн</strong><span><a href="https://radio.aifm.su/public/aifm" target="_blank" rel="noopener">Открыть поток</a></span></div></div>
-    <div class="contact-card"><div class="contact-icon">⏰</div><div><strong>Режим работы</strong><span>24 часа, 7 дней в неделю</span></div></div>
-    <div class="contact-form">
-      <h3 style="margin-bottom:1rem;font-size:1rem;">Написать нам</h3>
-      <form id="contactForm" onsubmit="submitForm(event)">
-  <div class="form-row">
-    <div class="form-field">
-      <label for="name">Ваше имя</label>
-      <input type="text" id="name" name="name" placeholder="Укажите ваше имя" required>
-    </div>
-    <div class="form-field">
-      <label for="email">E-mail</label>
-      <input type="email" id="email" name="email" placeholder="Введите корректный e-mail" required>
-    </div>
-  </div>
-  <div class="form-field" style="margin-bottom:1rem">
-    <label for="message">Сообщение</label>
-    <textarea id="message" name="message" placeholder="Напишите сообщение" required></textarea>
-  </div>
-  <button type="submit" class="btn-submit">Отправить</button>
-  <div class="form-success" id="formSuccess">✅ Сообщение отправлено! Мы ответим в ближайшее время.</div>
+<h2>Свяжитесь с нами</h2>
+<p class="section-sub">Контакты</p>
+<div class="contacts-grid">
+<div class="contact-card"><div class="contact-icon">✉️</div><div><strong>E-mail</strong><span>radioaifm@mail.ru</span></div></div>
+<div class="contact-card"><div class="contact-icon">📱</div><div><strong>Telegram</strong><span><a href="https://t.me/radioaifm" target="_blank" rel="noopener">@radioaifm</a></span></div></div>
+<div class="contact-card"><div class="contact-icon">🔗</div><div><strong>Слушать онлайн</strong><span><a href="https://radio.aifm.su/public/aifm" target="_blank" rel="noopener">Открыть поток</a></span></div></div>
+<div class="contact-card"><div class="contact-icon">⏰</div><div><strong>Режим работы</strong><span>24 часа, 7 дней в неделю</span></div></div>
+<div class="contact-form">
+<h3 style="margin-bottom:1rem;font-size:1rem;">Написать нам</h3>
+<form id="contactForm" onsubmit="submitForm(event)">
+<div class="form-row">
+<div class="form-field">
+<label for="name">Ваше имя</label>
+<input type="text" id="name" name="name" placeholder="Укажите ваше имя" required>
+</div>
+<div class="form-field">
+<label for="email">E-mail</label>
+<input type="email" id="email" name="email" placeholder="Введите корректный e-mail" required>
+</div>
+</div>
+<div class="form-field" style="margin-bottom:1rem">
+<label for="message">Сообщение</label>
+<textarea id="message" name="message" placeholder="Напишите сообщение" required></textarea>
+</div>
+<button type="submit" class="btn-submit">Отправить</button>
+<div class="form-success" id="formSuccess">✅ Сообщение отправлено! Мы ответим в ближайшее время.</div>
 </form>
-    </div>
-  </div>
+</div>
+</div>
 </section><div style="text-align:center; padding: 18px 0 0; color: #888; font-size: 13px;">
-  Создатель и главный редактор Radio AI FM — <strong style="color:#c6d8f4;">Абдуллин Александр Арсентьевич</strong>
+Создатель и главный редактор Radio AI FM — <strong style="color:#c6d8f4;">Абдуллин Александр Арсентьевич</strong>
 </div>
 <footer>
 
 <footer>
-  <div class="footer-links">
-    <a href="#schedule">Расписание</a>
-    <a href="#news">Новости</a>
-    <a href="#team">Ведущие</a>
-    <a href="#contacts">Контакты</a>
-  </div>
-  <div style="text-align:center;color:var(--muted);font-size:0.8rem;">
-    <div style="font-size:1.4rem;margin-bottom:0.5rem;">📡</div>
-    Radio AI FM
-  </div>
-     <div class="footer-copy">
-      <p>©Radio AI FM</p>
-      <p>© 2025 Все права защищены.</p>
-            <p style="margin-top:0.5rem;"><a href="/privacy.html">Политика конфиденциальности</a> · <a href="/terms.html">Условия использования</a></p>
-    </div>
-  </footer>
+<div class="footer-links">
+<a href="#schedule">Расписание</a>
+<a href="#news">Новости</a>
+<a href="#team">Ведущие</a>
+<a href="#contacts">Контакты</a>
+</div>
+<div style="text-align:center;color:var(--muted);font-size:0.8rem;">
+<div style="font-size:1.4rem;margin-bottom:0.5rem;">📡</div>
+Radio AI FM
+</div>
+<div class="footer-copy">
+<p>©Radio AI FM</p>
+<p>© 2025 Все права защищены.</p>
+<p style="margin-top:0.5rem;"><a href="/privacy.html">Политика конфиденциальности</a> · <a href="/terms.html">Условия использования</a></p>
+</div>
+</footer>
 
 <audio id="radioAudio" preload="none"></audio>
 
 <script>
-  const STREAM_URL = 'https://radio.aifm.su/listen/aifm/radio.mp3';
-  const audio = document.getElementById('radioAudio');
-  const btn = document.getElementById('playBtn');
-  const statusEl = document.getElementById('statusText');
-  const trackStatus = document.getElementById('track-status');
-  let playing = false;
+const STREAM_URL = 'https://radio.aifm.su/listen/aifm/radio.mp3';
+const audio = document.getElementById('radioAudio');
+const btn = document.getElementById('playBtn');
+const statusEl = document.getElementById('statusText');
+const trackStatus = document.getElementById('track-status');
+let playing = false;
 
-  function togglePlay() {
-    if (playing) {
-      audio.pause();
-      audio.src = '';
-      playing = false;
-      btn.textContent = '▶';
-      btn.setAttribute('aria-label', 'Воспроизвести');
-      trackStatus.textContent = '';
-      statusEl.textContent = '';
-    } else {
-      audio.src = STREAM_URL;
-      audio.load();
-      audio.play().catch(() => {
-        statusEl.textContent = 'Ошибка воспроизведения. Попробуйте ещё раз.';
-      });
-      playing = true;
-      btn.textContent = '⏸';
-      btn.setAttribute('aria-label', 'Пауза');
-      trackStatus.textContent = 'Подключение…';
-      statusEl.textContent = 'Буферизация…';
-    }
-  }
+function togglePlay() {
+if (playing) {
+audio.pause();
+audio.src = '';
+playing = false;
+btn.textContent = '▶';
+btn.setAttribute('aria-label', 'Воспроизвести');
+trackStatus.textContent = '';
+statusEl.textContent = '';
+} else {
+audio.src = STREAM_URL;
+audio.load();
+audio.play().catch(() => {
+statusEl.textContent = 'Ошибка воспроизведения. Попробуйте ещё раз.';
+});
+playing = true;
+btn.textContent = '⏸';
+btn.setAttribute('aria-label', 'Пауза');
+trackStatus.textContent = 'Подключение…';
+statusEl.textContent = 'Буферизация…';
+}
+}
 
-  audio.addEventListener('playing', () => {
-    statusEl.textContent = '';
-    trackStatus.textContent = 'В эфире';
-  });
+audio.addEventListener('playing', () => {
+statusEl.textContent = '';
+trackStatus.textContent = 'В эфире';
+});
 
-  audio.addEventListener('waiting', () => {
-    statusEl.textContent = 'Буферизация…';
-  });
+audio.addEventListener('waiting', () => {
+statusEl.textContent = 'Буферизация…';
+});
 
-  audio.addEventListener('error', () => {
-    statusEl.textContent = 'Нет соединения с потоком.';
-    playing = false;
-    btn.textContent = '▶';
-    btn.setAttribute('aria-label', 'Воспроизвести');
-    trackStatus.textContent = '';
-  });
+audio.addEventListener('error', () => {
+statusEl.textContent = 'Нет соединения с потоком.';
+playing = false;
+btn.textContent = '▶';
+btn.setAttribute('aria-label', 'Воспроизвести');
+trackStatus.textContent = '';
+});
 
-  function setVolume(v) {
-    audio.volume = v / 100;
-    document.getElementById('vol-label').textContent = v + '%';
-  }
+function setVolume(v) {
+audio.volume = v / 100;
+document.getElementById('vol-label').textContent = v + '%';
+}
 
- async function submitForm(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('.btn-submit');
-    const successEl = document.getElementById('formSuccess');
+async function submitForm(e) {
+e.preventDefault();
+const btn = e.target.querySelector('.btn-submit');
+const successEl = document.getElementById('formSuccess');
 
- const name = document.getElementById('name').value.trim();
+const name = document.getElementById('name').value.trim();
 const email = document.getElementById('email').value.trim();
 const message = document.getElementById('message').value.trim();
 
-    btn.disabled = true;
-    btn.textContent = 'Отправка…';
+btn.disabled = true;
+btn.textContent = 'Отправка…';
 
-    try {
-      const res = await fetch('https://radioaifm-contact.pesnibulgara.workers.dev', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, message }),
-      });
+try {
+  const res = await fetch('https://radioaifm-contact.pesnibulgara.workers.dev', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, message }),
+  });
 
-      const data = await res.json();
+  const data = await res.json();
 
-      if (data.ok) {
-        successEl.textContent = '✅ Сообщение отправлено! Мы ответим в ближайшее время.';
-        successEl.style.color = 'var(--live)';
-        successEl.style.display = 'block';
-        e.target.reset();
-      } else {
-        successEl.textContent = '❌ Ошибка: ' + (data.error || 'Попробуйте ещё раз.');
-        successEl.style.color = 'oklch(60% 0.2 25)';
-        successEl.style.display = 'block';
-      }
-    } catch {
-      successEl.textContent = '❌ Нет соединения. Проверьте интернет и попробуйте снова.';
-      successEl.style.color = 'oklch(60% 0.2 25)';
-      successEl.style.display = 'block';
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Отправить';
-    }
+  if (data.ok) {
+    successEl.textContent = '✅ Сообщение отправлено! Мы ответим в ближайшее время.';
+    successEl.style.color = 'var(--live)';
+    successEl.style.display = 'block';
+    e.target.reset();
+  } else {
+    successEl.textContent = '❌ Ошибка: ' + (data.error || 'Попробуйте ещё раз.');
+    successEl.style.color = 'oklch(60% 0.2 25)';
+    successEl.style.display = 'block';
   }
-    // --- Название текущей песни ---
-  const METADATA_URL = 'https://radio.aifm.su/api/nowplaying/aifm';
-  const nowPlayingEl = document.getElementById('nowPlaying');
+} catch {
+  successEl.textContent = '❌ Нет соединения. Проверьте интернет и попробуйте снова.';
+  successEl.style.color = 'oklch(60% 0.2 25)';
+  successEl.style.display = 'block';
+} finally {
+  btn.disabled = false;
+  btn.textContent = 'Отправить';
+}
+}
+// --- Название текущей песни ---
+const METADATA_URL = 'https://radio.aifm.su/api/nowplaying/aifm';
+const nowPlayingEl = document.getElementById('nowPlaying');
 
-  async function updateNowPlaying() {
-    try {
-      const res = await fetch(METADATA_URL);
-      const data = await res.json();
-      const artist = data.now_playing?.song?.artist || '';
-      const title  = data.now_playing?.song?.title  || '';
-      const text   = artist && title ? `${artist} — ${title}`
-                   : title || artist || '';
-      nowPlayingEl.textContent = text;
-            // Обновление обложки
-      const artUrl = data.now_playing?.song?.art;
-      if (artUrl) document.querySelector('.player-avatar').style.backgroundImage = `url(${artUrl})`;
-    } catch {
-      // нет соединения — оставляем пустым
-    }
+async function updateNowPlaying() {
+try {
+const res = await fetch(METADATA_URL);
+const data = await res.json();
+const artist = data.now_playing?.song?.artist || '';
+const title  = data.now_playing?.song?.title  || '';
+const text   = artist && title ? ${artist} — ${title}
+: title || artist || '';
+nowPlayingEl.textContent = text;
+// Обновление обложки
+const artUrl = data.now_playing?.song?.art;
+if (artUrl) document.querySelector('.player-avatar').style.backgroundImage = url(${artUrl});
+} catch {
+// нет соединения — оставляем пустым
+}
+}
+
+updateNowPlaying();
+setInterval(updateNowPlaying, 15000);
+// --- Подсветка текущей программы ---
+function updateScheduleBadges() {
+const now = new Date();
+const moscowOffset = 3 * 60; // МСК = UTC+3
+const localOffset = now.getTimezoneOffset();
+const moscowTime = new Date(now.getTime() + (moscowOffset + localOffset) * 60000);
+const hours = moscowTime.getHours();
+const minutes = moscowTime.getMinutes();
+const currentMinutes = hours * 60 + minutes;
+
+const schedule = [
+  { start: 7 * 60, name: 'Утренний запуск' },
+  { start: 11 * 60, name: 'Дневной поток' },
+  { start: 15 * 60, name: 'AI Микс' },
+  { start: 19 * 60, name: 'Вечерняя атмосфера' },
+  { start: 23 * 60, name: 'Ночная волна' },
+  { start: 3 * 60, name: 'Cosmos Late Night' } // 03:00 следующего дня
+];
+
+// Найти текущую и следующую программу
+let currentIdx = -1;
+for (let i = 0; i < schedule.length; i++) {
+  const nextIdx = (i + 1) % schedule.length;
+  const start = schedule[i].start;
+  const end = schedule[nextIdx].start;
+
+  // Если программа начинается после полуночи (03:00 = 180 минут)
+  if (start < 7 * 60 && currentMinutes >= start && currentMinutes < 7 * 60) {
+    currentIdx = i;
+    break;
   }
-
-  updateNowPlaying();
-  setInterval(updateNowPlaying, 15000);
-    // --- Подсветка текущей программы ---
-  function updateScheduleBadges() {
-    const now = new Date();
-    const moscowOffset = 3 * 60; // МСК = UTC+3
-    const localOffset = now.getTimezoneOffset();
-    const moscowTime = new Date(now.getTime() + (moscowOffset + localOffset) * 60000);
-    const hours = moscowTime.getHours();
-    const minutes = moscowTime.getMinutes();
-    const currentMinutes = hours * 60 + minutes;
-
-    const schedule = [
-      { start: 7 * 60, name: 'Утренний запуск' },
-      { start: 11 * 60, name: 'Дневной поток' },
-      { start: 15 * 60, name: 'AI Микс' },
-      { start: 19 * 60, name: 'Вечерняя атмосфера' },
-      { start: 23 * 60, name: 'Ночная волна' },
-      { start: 3 * 60, name: 'Cosmos Late Night' } // 03:00 следующего дня
-    ];
-
-    // Найти текущую и следующую программу
-    let currentIdx = -1;
-    for (let i = 0; i < schedule.length; i++) {
-      const nextIdx = (i + 1) % schedule.length;
-      const start = schedule[i].start;
-      const end = schedule[nextIdx].start;
-
-      // Если программа начинается после полуночи (03:00 = 180 минут)
-      if (start < 7 * 60 && currentMinutes >= start && currentMinutes < 7 * 60) {
-        currentIdx = i;
-        break;
-      }
-      // Обычное время (07:00–23:00)
-      if (currentMinutes >= start && (end > start ? currentMinutes < end : true)) {
-        currentIdx = i;
-        break;
-      }
-    }
-
-    // Если текущая программа не найдена (ночь после 23:00 до 03:00)
-    if (currentIdx === -1 && currentMinutes >= 23 * 60) {
-      currentIdx = 4; // Ночная волна (23:00)
-    }
-
-    const nextIdx = currentIdx !== -1 ? (currentIdx + 1) % schedule.length : 0;
-
-    // Убрать все бейджи
-    document.querySelectorAll('.schedule-item .badge-live, .schedule-item .badge-soon').forEach(b => b.remove());
-
-    // Добавить бейджи
-    const items = document.querySelectorAll('.schedule-item');
-    if (currentIdx !== -1 && items[currentIdx]) {
-      const badge = document.createElement('span');
-      badge.className = 'badge-live';
-      badge.textContent = 'В ЭФИРЕ';
-      items[currentIdx].appendChild(badge);
-    }
-    if (items[nextIdx]) {
-      const badge = document.createElement('span');
-      badge.className = 'badge-soon';
-      badge.textContent = 'СКОРО';
-      items[nextIdx].appendChild(badge);
-    }
+  // Обычное время (07:00–23:00)
+  if (currentMinutes >= start && (end > start ? currentMinutes < end : true)) {
+    currentIdx = i;
+    break;
   }
+}
 
-  updateScheduleBadges();
-  setInterval(updateScheduleBadges, 60000); // обновление каждую минуту
+// Если текущая программа не найдена (ночь после 23:00 до 03:00)
+if (currentIdx === -1 && currentMinutes >= 23 * 60) {
+  currentIdx = 4; // Ночная волна (23:00)
+}
+
+const nextIdx = currentIdx !== -1 ? (currentIdx + 1) % schedule.length : 0;
+
+// Убрать все бейджи
+document.querySelectorAll('.schedule-item .badge-live, .schedule-item .badge-soon').forEach(b => b.remove());
+
+// Добавить бейджи
+const items = document.querySelectorAll('.schedule-item');
+if (currentIdx !== -1 && items[currentIdx]) {
+  const badge = document.createElement('span');
+  badge.className = 'badge-live';
+  badge.textContent = 'В ЭФИРЕ';
+  items[currentIdx].appendChild(badge);
+}
+if (items[nextIdx]) {
+  const badge = document.createElement('span');
+  badge.className = 'badge-soon';
+  badge.textContent = 'СКОРО';
+  items[nextIdx].appendChild(badge);
+}
+}
+
+updateScheduleBadges();
+setInterval(updateScheduleBadges, 60000); // обновление каждую минуту
 </script>
- </body>
+</body>
 </html>
