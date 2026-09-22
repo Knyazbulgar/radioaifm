@@ -178,146 +178,6 @@
   .form-success { display: none; color: var(--live); font-size: 0.9rem; margin-top: 0.75rem; }
   .ai-note { font-size: 0.75rem; color: var(--muted); text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
 
-  /* ADVERTISERS SECTION */
-  .advertisers-section {
-    padding: 60px 20px;
-    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
-    color: #fff;
-  }
-
-  .advertisers-section h2 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-    color: #fff;
-  }
-
-  .advertisers-section .subtitle {
-    font-size: 1.1rem;
-    color: #a0a0a0;
-    margin-bottom: 40px;
-  }
-
-  .advertiser-form {
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .advertiser-form .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 15px;
-  }
-
-  .advertiser-form input,
-  .advertiser-form select,
-  .advertiser-form textarea {
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    color: #fff;
-    font-size: 1rem;
-    transition: border-color 0.3s;
-  }
-
-  .advertiser-form input:focus,
-  .advertiser-form select:focus,
-  .advertiser-form textarea:focus {
-    outline: none;
-    border-color: #ff4444;
-    background: rgba(255, 255, 255, 0.08);
-  }
-
-  .advertiser-form input::placeholder,
-  .advertiser-form textarea::placeholder {
-    color: #666;
-  }
-
-  .advertiser-form textarea {
-    grid-column: 1 / -1;
-    resize: vertical;
-    margin-bottom: 15px;
-  }
-
-  .form-checkbox {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    font-size: 0.9rem;
-  }
-
-  .form-checkbox input {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-    cursor: pointer;
-  }
-
-  .form-checkbox label {
-    cursor: pointer;
-  }
-
-  .form-checkbox a {
-    color: #ff4444;
-    text-decoration: none;
-  }
-
-  .form-checkbox a:hover {
-    text-decoration: underline;
-  }
-
-  .btn {
-    padding: 12px 40px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    cursor: pointer;
-    width: 100%;
-    transition: all 0.3s;
-  }
-
-  .btn-primary {
-    background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
-    color: #fff;
-    font-weight: 600;
-  }
-
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 68, 68, 0.3);
-  }
-
-  .btn-primary:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .form-message {
-    margin-top: 15px;
-    text-align: center;
-    font-size: 0.95rem;
-    min-height: 20px;
-  }
-
-  .form-message.success {
-    color: #4caf50;
-  }
-
-  .form-message.error {
-    color: #ff6b6b;
-  }
-
-  @media (max-width: 600px) {
-    .advertiser-form .form-row {
-      grid-template-columns: 1fr;
-    }
-    .advertisers-section h2 {
-      font-size: 1.8rem;
-    }
-  }
-
   /* FOOTER */
   footer {
     border-top: 1px solid var(--border);
@@ -707,7 +567,7 @@
     <li><a href="#team">Ведущие</a></li>
     <li><a href="#contacts">Контакты</a></li>
     <li><a href="/artists.html">Для артистов</a></li>
-    <li><a href="#advertisers">Рекламодателям</a></li>
+    <li><a href="/advertisers.html">Рекламодателям</a></li>
   </ul>
 </nav>
 
@@ -766,7 +626,7 @@
           <span class="ad-banner__icon">📣</span>
           <p class="ad-banner__title">Ваша реклама</p>
           <p class="ad-banner__size">300 × 250 — Medium Rectangle</p>
-          <a class="ad-banner__cta" href="mailto:radioaifm@mail.ru">Заказать</a>
+          <a class="ad-banner__cta" href="/advertisers.html">Заказать</a>
         </div>
       </div>
 
@@ -775,7 +635,7 @@
           <span class="ad-banner__icon">🎙️</span>
           <p class="ad-banner__title">Реклама на Radio AI FM</p>
           <p class="ad-banner__size">300 × 250 — Medium Rectangle</p>
-          <a class="ad-banner__cta" href="mailto:radioaifm@mail.ru">Заказать</a>
+          <a class="ad-banner__cta" href="/advertisers.html">Заказать</a>
         </div>
       </div>
 
@@ -786,7 +646,7 @@
             <p class="ad-banner__title">Рекламируйтесь на аудиторию Radio AI FM</p>
             <p class="ad-banner__size">728 × 90 — Лидерборд</p>
           </div>
-          <a class="ad-banner__cta" href="mailto:radioaifm@mail.ru">Заказать</a>
+          <a class="ad-banner__cta" href="/advertisers.html">Заказать</a>
         </div>
       </div>
 
@@ -831,7 +691,7 @@
       <div class="avatar"><img src="/team/maria.jpg" alt="Мария Эфир" onerror="this.parentElement.textContent='МЭ'"></div>
       <h3>Мария Эфир</h3>
       <div class="role">Дневной и вечерний диджей</div>
-      <p>Мягкий и приятный голос дневного и вечернего эфира. Создаёт атмосферу уюта и расслабления.</p>
+      <p>Мягкий и приятный голос дневного и вечернего эфира. Создаёт атмосфера уюта и расслабления.</p>
     </div>
     <div class="team-card">
       <div class="avatar"><img src="/team/max.jpg" alt="Макс Частота" onerror="this.parentElement.textContent='МЧ'"></div>
@@ -847,47 +707,6 @@
     </div>
   </div>
   <p class="ai-note">Ведущие Radio AI FM созданы с помощью технологий искусственного интеллекта.</p>
-</section>
-
-<!-- РАЗДЕЛ ДЛЯ РЕКЛАМОДАТЕЛЕЙ -->
-<section id="advertisers" class="advertisers-section">
-  <div style="max-width: 900px; margin: 0 auto;">
-    <h2>Разместить рекламу на Radio AI FM</h2>
-    <p class="subtitle">Заполните форму — мы свяжемся с вами в течение 24 часов</p>
-
-    <form id="advertiser-form" class="advertiser-form">
-      <div class="form-row">
-        <input type="text" name="name" placeholder="Ваше имя" required>
-        <input type="email" name="email" placeholder="Email" required>
-      </div>
-
-      <div class="form-row">
-        <input type="text" name="company" placeholder="Компания">
-        <input type="tel" name="phone" placeholder="Телефон">
-      </div>
-
-      <div class="form-row">
-        <select name="budget" required>
-          <option value="">Выберите бюджет</option>
-          <option value="up_to_50k">До 50 000 ₽</option>
-          <option value="50k_200k">50 000 — 200 000 ₽</option>
-          <option value="200k_plus">Более 200 000 ₽</option>
-        </select>
-      </div>
-
-      <textarea name="message" placeholder="Расскажите о вашем предложении" rows="4"></textarea>
-
-      <div class="form-checkbox">
-        <input type="checkbox" id="privacy" name="privacy" required>
-        <label for="privacy">
-          Я согласен с <a href="/privacy-policy">политикой конфиденциальности</a>
-        </label>
-      </div>
-
-      <button type="submit" class="btn btn-primary">Отправить заявку</button>
-      <div id="form-message" class="form-message"></div>
-    </form>
-  </div>
 </section>
 
 <section id="contacts">
@@ -1074,4 +893,54 @@ const message = document.getElementById('message').value.trim();
 
     const schedule = [
       { start: 7 * 60, name: 'Утренний запуск' },
-      { start: 11 * 60, name: 'Дневной поток' 
+      { start: 11 * 60, name: 'Дневной поток' },
+      { start: 15 * 60, name: 'AI Микс' },
+      { start: 19 * 60, name: 'Вечерняя атмосфера' },
+      { start: 23 * 60, name: 'Ночная волна' },
+      { start: 3 * 60, name: 'Cosmos Late Night' }
+    ];
+
+    let currentIdx = -1;
+    for (let i = 0; i < schedule.length; i++) {
+      const nextIdx = (i + 1) % schedule.length;
+      const start = schedule[i].start;
+      const end = schedule[nextIdx].start;
+
+      if (start < 7 * 60 && currentMinutes >= start && currentMinutes < 7 * 60) {
+        currentIdx = i;
+        break;
+      }
+      if (currentMinutes >= start && (end > start ? currentMinutes < end : true)) {
+        currentIdx = i;
+        break;
+      }
+    }
+
+    if (currentIdx === -1 && currentMinutes >= 23 * 60) {
+      currentIdx = 4;
+    }
+
+    const nextIdx = currentIdx !== -1 ? (currentIdx + 1) % schedule.length : 0;
+
+    document.querySelectorAll('.schedule-item .badge-live, .schedule-item .badge-soon').forEach(b => b.remove());
+
+    const items = document.querySelectorAll('.schedule-item');
+    if (currentIdx !== -1 && items[currentIdx]) {
+      const badge = document.createElement('span');
+      badge.className = 'badge-live';
+      badge.textContent = 'В ЭФИРЕ';
+      items[currentIdx].appendChild(badge);
+    }
+    if (items[nextIdx]) {
+      const badge = document.createElement('span');
+      badge.className = 'badge-soon';
+      badge.textContent = 'СКОРО';
+      items[nextIdx].appendChild(badge);
+    }
+  }
+
+  updateScheduleBadges();
+  setInterval(updateScheduleBadges, 60000);
+</script>
+ </body>
+</html>
