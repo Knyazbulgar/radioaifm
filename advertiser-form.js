@@ -1,61 +1,50 @@
-document.getElementById('advertiser-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('advertiser-form');
+  if (!form) return;
 
-  const button = this.querySelector('button[type="submit"]');
-  const messageDiv = document.getElementById('form-message');
-  button.disabled = true;
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-  // Собираем данные
-  const formData = new FormData(this);
-  const data = Object.fromEntries(formData);
+    const formData = {
+      name: form.querySelector('input[name="name"]').value.trim(),
+      email: form.querySelector('input[name="email"]').value.trim(),
+      company: form.querySelector('input[name="company"]').value.trim() || 'не указано',
+      phone: form.querySelector('input[name="phone"]').value.trim() || 'не указано',
+      budget: form.querySelector('select[name="budget"]').value,
+      message: form.querySelector('textarea[name="message"]').value.trim()
+    };
 
-  try {
-    // Отправляем на сервер
-    const response = await fetch('/api/advertiser-form', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
-    });
+    const btn = form.querySelector('.btn-primary');
+    const messageEl = document.getElementById('form-message');
+    
+    btn.disabled = true;
+    btn.textContent = 'Отправка…';
+    messageEl.textContent = '';
+    messageEl.className = 'form-message';
 
-    if (response.ok) {
-      // GA событие: форма отправлена
-      if (window.gtag) {
-        gtag('event', 'advertiser_form_submitted', {
-          company: data.company || 'not_provided',
-          budget_range: data.budget
-        });
-      }
-
-      messageDiv.textContent = 'Спасибо! Мы свяжемся с вами в течение 24 часов.';
-      messageDiv.className = 'form-message success';
-      this.reset();
-    } else {
-      throw new Error('Ошибка отправки');
-    }
-  } catch (error) {
-    messageDiv.textContent = 'Ошибка при отправке. Попробуйте позже или свяжитесь с нами напрямую.';
-    messageDiv.className = 'form-message error';
-  } finally {
-    button.disabled = false;
-  }
-});
-
-// GA событие: скачивание медиакита
-document.getElementById('download-mediakit')?.addEventListener('click', function() {
-  if (window.gtag) {
-    gtag('event', 'mediakit_download');
-  }
-});
-
-// GA события: клик по контактам
-document.querySelectorAll('[data-contact-type]').forEach(el => {
-  el.addEventListener('click', function() {
-    if (window.gtag) {
-      gtag('event', 'advertiser_contact_click', {
-        contact_type: this.dataset.contactType
+    try {
+      const response = await fetch('https://radioaifm-advertiser.pesnibulgara.workers.dev', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
       });
+
+      const data = await response.json();
+
+      if (data.ok) {
+        messageEl.textContent = '✅ Заявка отправлена! Мы свяжемся с вами в течение 24 часов.';
+        messageEl.className = 'form-message success';
+        form.reset();
+      } else {
+        messageEl.textContent = '❌ Ошибка: ' + (data.error || 'Попробуйте ещё раз');
+        messageEl.className = 'form-message error';
+      }
+    } catch (error) {
+      messageEl.textContent = '❌ Ошибка подключения. Проверьте интернет.';
+      messageEl.className = 'form-message error';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Отправить заявку';
     }
   });
 });
