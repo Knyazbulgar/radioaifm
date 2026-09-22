@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.getElementById('advertiser-form');
-  if (!form) return;
+  
+  if (!form) {
+    console.error('Форма не найдена');
+    return;
+  }
 
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
