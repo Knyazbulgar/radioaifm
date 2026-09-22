@@ -4,4 +4,86 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Реклама на Radio AI FM — Разместить объявление</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%2310274f'/%3E%3Ccircle cx='32' cy='32' r='29' fill='none' stroke='%23
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f111a;
+      color: #fff;
+      margin: 0;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #888;
+      margin-bottom: 30px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    input, select, textarea {
+      padding: 12px;
+      background: #1a1d2e;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 1rem;
+    }
+    button {
+      padding: 14px;
+      background: #ff4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: 0.6;
+    }
+    #form-message {
+      margin-top: 15px;
+      text-align: center;
+    }
+    .success { color: #4caf50; }
+    .error { color: #ff6b6b; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Разместить рекламу на Radio AI FM</h1>
+  <p class="subtitle">Заполните форму — мы свяжемся с вами в течение 24 часов</p>
+
+  <form id="advertiser-form">
+    <input type="text" name="name" placeholder="Ваше имя" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="text" name="company" placeholder="Компания">
+    <input type="tel" name="phone" placeholder="Телефон">
+
+    <select name="budget" required>
+      <option value="">Выберите бюджет</option>
+      <option value="up_to_50k">До 50 000 ₽</option>
+      <option value="50k_200k">50 000 — 200 000 ₽</option>
+      <option value="200k_plus">Более 200 000 ₽</option>
+    </select>
+
+    <textarea name="message" placeholder="Сообщение" rows="4"></textarea>
+
+    <button type="submit" class="btn-primary">Отправить заявку</button>
+    <div id="form-message"></div>
+  </form>
+</div>
+
+<script src="advertiser-form.js"></script>
+</body>
+</html>
