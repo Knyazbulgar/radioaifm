@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%2310274f'/%3E%3Ccircle cx='32' cy='32' r='29' fill='none' stroke='%23255a9e' stroke-width='2'/%3E%3Ccircle cx='32' cy='22' r='2.5' fill='%2339a0f4'/%3E%3Crect x='30.8' y='24' width='2.4' height='14' fill='%2339a0f4'/%3E%3Cpath d='M20 30 A14 14 0 0 1 44 30' fill='none' stroke='%2339a0f4' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M15 23 A20 20 0 0 1 49 23' fill='none' stroke='%2339a0f4' stroke-width='2.5' stroke-linecap='round'/%3E%3Ctext x='32' y='56' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='20' fill='%23ffffff'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ХИТ-ПАРАД — Radio AI FM</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4TL4D8K51"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4TL4D8K51');
+</script>
+<style>
+  :root {
+    --bg: oklch(14% 0.01 260);
+    --surface: oklch(20% 0.015 260);
+    --surface-raised: oklch(25% 0.015 260);
+    --border: oklch(32% 0.02 260);
+    --text: oklch(92% 0.01 260);
+    --muted: oklch(62% 0.015 260);
+    --accent: oklch(65% 0.22 30);
+    --accent-dim: oklch(55% 0.18 30);
+    --live: oklch(60% 0.2 145);
+    --success: oklch(62% 0.2 145);
+    --warning: oklch(70% 0.18 40);
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--accent-dim);
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: oklch(14% 0.01 260 / 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 60px;
+  }
+
+  .nav-logo {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    font-size: 0.9rem;
+    transition: color 0.15s;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--text);
+  }
+
+  /* CONTAINER */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+    flex: 1;
+  }
+
+  /* HEADER */
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .page-header .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  /* NOW PLAYING */
+  .now-playing {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .now-playing h2 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .song-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .song-cover {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent-dim), oklch(40% 0.18 260));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .song-info {
+    flex: 1;
+  }
+
+  .song-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+  }
+
+  .song-artist {
+    font-size: 1.1rem;
+    color: var(--muted);
+  }
+
+  .vote-btn {
+    width: 100%;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 10px;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .vote-btn:hover:not(:disabled) {
+    background: var(--accent-dim);
+    transform: translateY(-1px);
+  }
+
+  .vote-btn:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .vote-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .vote-result {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-align: center;
+    display: none;
+  }
+
+  .vote-result.show {
+    display: block;
+  }
+
+  .vote-result.success {
+    background: oklch(60% 0.2 145 / 0.15);
+    border: 1px solid var(--success);
+    color: var(--success);
+  }
+
+  .vote-result.warning {
+    background: oklch(70% 0.18 40 / 0.15);
+    border: 1px solid var(--warning);
+    color: var(--warning);
+  }
+
+  /* CHART */
+  .chart-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+  }
+
+  .chart-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .chart-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .chart-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 10px;
+    transition: background 0.15s;
+  }
+
+  .chart-item:hover {
+    background: var(--surface-raised);
+  }
+
+  .rank {
+    font-size: 1.4rem;
+    font-weight: 800;
+    width: 50px;
+    text-align: center;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .rank.top-1 {
+    color: oklch(75% 0.15 60);
+    font-size: 1.8rem;
+  }
+
+  .rank.top-2 {
+    color: oklch(70% 0.12 40);
+    font-size: 1.6rem;
+  }
+
+  .rank.top-3 {
+    color: oklch(65% 0.10 30);
+    font-size: 1.5rem;
+  }
+
+  .chart-song {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .chart-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chart-artist {
+    font-size: 0.85rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .votes {
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .loading {
+    text-align: center;
+    color: var(--muted);
+    padding: 3rem 1rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--muted);
+    padding: 3rem 1rem;
+  }
+
+  .empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: auto;
+  }
+
+  footer a {
+    color: var(--accent);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    nav {
+      padding: 0 1rem;
+    }
+
+    .nav-links {
+      display: none;
+    }
+
+    .song-display {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .song-title {
+      font-size: 1.2rem;
+    }
+
+    .song-artist {
+      font-size: 1rem;
+    }
+
+    .rank {
+      width: 40px;
+      font-size: 1.2rem;
+    }
+
+    .rank.top-1 {
+      font-size: 1.5rem;
+    }
+
+    .rank.top-2 {
+      font-size: 1.4rem;
+    }
+
+    .rank.top-3 {
+      font-size: 1.3rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">📡 Radio AI FM</a>
+  <ul class="nav-links">
+    <li><a href="/#schedule">Расписание</a></li>
+    <li><a href="/#news">Новости</a></li>
+    <li><a href="/#team">Ведущие</a></li>
+    <li><a href="/#contacts">Контакты</a></li>
+    <li><a href="/hitparad.html" class="active">Хит-парад</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+  <header class="page-header">
+    <h1>🎵 ХИТ-ПАРАД AIFM</h1>
+    <p class="subtitle">Голосуй за любимые треки в эфире</p>
+  </header>
+
+  <section class="now-playing">
+    <h2>Сейчас в эфире</h2>
+    <div class="song-display">
+      <div class="song-cover" id="song-cover">🎵</div>
+      <div class="song-info">
+        <div class="song-title" id="current-title">Загрузка...</div>
+        <div class="song-artist" id="current-artist"></div>
+      </div>
+    </div>
+    <button class="vote-btn" id="vote-btn" onclick="sendVote()">
+      <span>👍</span>
+      <span>Проголосовать за этот трек</span>
+    </button>
+    <div class="vote-result" id="vote-result"></div>
+  </section>
+
+  <section class="chart-section">
+    <h2>🏆 Топ-20 треков</h2>
+    <div class="chart-list" id="chart-list">
+      <div class="loading">Загрузка рейтинга...</div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <p>© 2025 Radio AI FM · <a href="/">На главную</a> · <a href="/#contacts">Контакты</a></p>
+</footer>
+
+<script>
+const API_URL = 'https://aifm-vote.pesnibulgara.workers.dev';
+const NOWPLAYING_URL = 'https://radio.aifm.su/api/nowplaying/aifm';
+
+let currentSong = null;
+
+// Получить текущую песню
+async function getCurrentSong() {
+  try {
+    const res = await fetch(NOWPLAYING_URL);
+    const data = await res.json();
+    const song = data.now_playing.song;
+    
+    currentSong = {
+      title: song.title || 'Неизвестный трек',
+      artist: song.artist || 'Неизвестный исполнитель'
+    };
+    
+    document.getElementById('current-title').textContent = currentSong.title;
+    document.getElementById('current-artist').textContent = currentSong.artist;
+    
+    // Обложка
+    const coverEl = document.getElementById('song-cover');
+    if (song.art) {
+      coverEl.style.backgroundImage = `url(${song.art})`;
+      coverEl.textContent = '';
+    } else {
+      coverEl.style.backgroundImage = '';
+      coverEl.textContent = '🎵';
+    }
+  } catch (err) {
+    console.error('Ошибка загрузки текущей песни:', err);
+    document.getElementById('current-title').textContent = 'Ошибка загрузки';
+    document.getElementById('current-artist').textContent = '';
+  }
+}
+
+// Загрузить чарт
+async function loadChart() {
+  const chartList = document.getElementById('chart-list');
+  
+  try {
+    const res = await fetch(`${API_URL}/chart`);
+    const data = await res.json();
+    
+    if (!data.chart || data.chart.length === 0) {
+      chartList.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🎵</div>
+          <p>Пока нет проголосованных треков</p>
+          <p style="margin-top:0.5rem;font-size:0.85rem;">Станьте первым, кто проголосует!</p>
+        </div>
+      `;
+      return;
+    }
+    
+    chartList.innerHTML = data.chart.map((song, index) => {
+      const rank = index + 1;
+      let rankClass = '';
+      if (rank === 1) rankClass = 'top-1';
+      else if (rank === 2) rankClass = 'top-2';
+      else if (rank === 3) rankClass = 'top-3';
+      
+      return `
+        <div class="chart-item">
+          <div class="rank ${rankClass}">${rank}</div>
+          <div class="chart-song">
+            <div class="chart-title">${escapeHtml(song.title)}</div>
+            <div class="chart-artist">${escapeHtml(song.artist)}</div>
+          </div>
+          <div class="votes">${song.votes} ${pluralize(song.votes)}</div>
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error('Ошибка загрузки рейтинга:', err);
+    chartList.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">⚠️</div>
+        <p>Не удалось загрузить рейтинг</p>
+      </div>
+    `;
+  }
+}
+
+// Отправить голос
+async function sendVote() {
+  if (!currentSong) {
+    await getCurrentSong();
+  }
+  
+  const btn = document.getElementById('vote-btn');
+  const result = document.getElementById('vote-result');
+  
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span><span>Отправка голоса...</span>';
+  
+  result.classList.remove('show', 'success', 'warning');
+  
+  try {
+    const res = await fetch(`${API_URL}/vote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(currentSong)
+    });
+    
+    const data = await res.json();
+    
+    if (res.ok) {
+      result.textContent = `✓ Ваш голос учтён! Всего голосов за этот трек: ${data.votes}`;
+      result.className = 'vote-result success show';
+      setTimeout(() => {
+        loadChart();
+      }, 500);
+    } else {
+      result.textContent = data.error || 'Не удалось проголосовать';
+      result.className = 'vote-result warning show';
+    }
+  } catch (err) {
+    result.textContent = '⚠️ Ошибка соединения с сервером. Попробуйте позже.';
+    result.className = 'vote-result warning show';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>👍</span><span>Проголосовать за этот трек</span>';
+  }
+}
+
+// Вспомогательные функции
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function pluralize(count) {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  
+  if (mod10 === 1 && mod100 !== 11) return 'голос';
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return 'голоса';
+  return 'голосов';
+}
+
+// Запуск
+getCurrentSong();
+loadChart();
+
+// Автообновление
+setInterval(getCurrentSong, 30000); // Каждые 30 секунд
+setInterval(loadChart, 60000);      // Каждую минуту
+</script>
+
+</body>
+</html>
