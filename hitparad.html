@@ -5,7 +5,6 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%2310274f'/%3E%3Ccircle cx='32' cy='32' r='29' fill='none' stroke='%23255a9e' stroke-width='2'/%3E%3Ccircle cx='32' cy='22' r='2.5' fill='%2339a0f4'/%3E%3Crect x='30.8' y='24' width='2.4' height='14' fill='%2339a0f4'/%3E%3Cpath d='M20 30 A14 14 0 0 1 44 30' fill='none' stroke='%2339a0f4' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M15 23 A20 20 0 0 1 49 23' fill='none' stroke='%2339a0f4' stroke-width='2.5' stroke-linecap='round'/%3E%3Ctext x='32' y='56' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='20' fill='%23ffffff'%3EAI%3C/text%3E%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ХИТ-ПАРАД — Radio AI FM</title>
-<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M4TL4D8K51"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -57,7 +56,6 @@
     color: var(--accent-dim);
   }
 
-  /* NAV */
   nav {
     position: sticky;
     top: 0;
@@ -98,7 +96,6 @@
     color: var(--text);
   }
 
-  /* CONTAINER */
   .container {
     max-width: 1100px;
     margin: 0 auto;
@@ -106,7 +103,6 @@
     flex: 1;
   }
 
-  /* HEADER */
   .page-header {
     text-align: center;
     margin-bottom: 3rem;
@@ -124,117 +120,6 @@
     font-size: 1rem;
   }
 
-  /* NOW PLAYING */
-  .now-playing {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
-    margin-bottom: 2.5rem;
-  }
-
-  .now-playing h2 {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    margin-bottom: 1rem;
-  }
-
-  .song-display {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .song-cover {
-    width: 80px;
-    height: 80px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--accent-dim), oklch(40% 0.18 260));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    flex-shrink: 0;
-    background-size: cover;
-    background-position: center;
-  }
-
-  .song-info {
-    flex: 1;
-  }
-
-  .song-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-    line-height: 1.2;
-  }
-
-  .song-artist {
-    font-size: 1.1rem;
-    color: var(--muted);
-  }
-
-  .vote-btn {
-    width: 100%;
-    background: var(--accent);
-    color: var(--bg);
-    border: none;
-    border-radius: 10px;
-    padding: 1rem;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-
-  .vote-btn:hover:not(:disabled) {
-    background: var(--accent-dim);
-    transform: translateY(-1px);
-  }
-
-  .vote-btn:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  .vote-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .vote-result {
-    margin-top: 1rem;
-    padding: 0.75rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    text-align: center;
-    display: none;
-  }
-
-  .vote-result.show {
-    display: block;
-  }
-
-  .vote-result.success {
-    background: oklch(60% 0.2 145 / 0.15);
-    border: 1px solid var(--success);
-    color: var(--success);
-  }
-
-  .vote-result.warning {
-    background: oklch(70% 0.18 40 / 0.15);
-    border: 1px solid var(--warning);
-    color: var(--warning);
-  }
-
-  /* CHART */
   .chart-section {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -341,7 +226,6 @@
     opacity: 0.5;
   }
 
-  /* FOOTER */
   footer {
     border-top: 1px solid var(--border);
     padding: 2rem 1.5rem;
@@ -355,7 +239,6 @@
     color: var(--accent);
   }
 
-  /* RESPONSIVE */
   @media (max-width: 640px) {
     nav {
       padding: 0 1rem;
@@ -363,19 +246,6 @@
 
     .nav-links {
       display: none;
-    }
-
-    .song-display {
-      flex-direction: column;
-      text-align: center;
-    }
-
-    .song-title {
-      font-size: 1.2rem;
-    }
-
-    .song-artist {
-      font-size: 1rem;
     }
 
     .rank {
@@ -412,28 +282,12 @@
 
 <div class="container">
   <header class="page-header">
-    <h1>🎵 ХИТ-ПАРАД AIFM</h1>
-    <p class="subtitle">Голосуй за любимые треки в эфире</p>
+    <h1>🏆 ХИТ-ПАРАД AIFM</h1>
+    <p class="subtitle">Топ-20 самых популярных треков по голосам слушателей</p>
   </header>
 
-  <section class="now-playing">
-    <h2>Сейчас в эфире</h2>
-    <div class="song-display">
-      <div class="song-cover" id="song-cover">🎵</div>
-      <div class="song-info">
-        <div class="song-title" id="current-title">Загрузка...</div>
-        <div class="song-artist" id="current-artist"></div>
-      </div>
-    </div>
-    <button class="vote-btn" id="vote-btn" onclick="sendVote()">
-      <span>👍</span>
-      <span>Проголосовать за этот трек</span>
-    </button>
-    <div class="vote-result" id="vote-result"></div>
-  </section>
-
   <section class="chart-section">
-    <h2>🏆 Топ-20 треков</h2>
+    <h2>🎵 Топ-20 треков</h2>
     <div class="chart-list" id="chart-list">
       <div class="loading">Загрузка рейтинга...</div>
     </div>
@@ -446,42 +300,7 @@
 
 <script>
 const API_URL = 'https://aifm-vote.pesnibulgara.workers.dev';
-const NOWPLAYING_URL = 'https://radio.aifm.su/api/nowplaying/aifm';
 
-let currentSong = null;
-
-// Получить текущую песню
-async function getCurrentSong() {
-  try {
-    const res = await fetch(NOWPLAYING_URL);
-    const data = await res.json();
-    const song = data.now_playing.song;
-    
-    currentSong = {
-      title: song.title || 'Неизвестный трек',
-      artist: song.artist || 'Неизвестный исполнитель'
-    };
-    
-    document.getElementById('current-title').textContent = currentSong.title;
-    document.getElementById('current-artist').textContent = currentSong.artist;
-    
-    // Обложка
-    const coverEl = document.getElementById('song-cover');
-    if (song.art) {
-      coverEl.style.backgroundImage = `url(${song.art})`;
-      coverEl.textContent = '';
-    } else {
-      coverEl.style.backgroundImage = '';
-      coverEl.textContent = '🎵';
-    }
-  } catch (err) {
-    console.error('Ошибка загрузки текущей песни:', err);
-    document.getElementById('current-title').textContent = 'Ошибка загрузки';
-    document.getElementById('current-artist').textContent = '';
-  }
-}
-
-// Загрузить чарт
 async function loadChart() {
   const chartList = document.getElementById('chart-list');
   
@@ -494,7 +313,7 @@ async function loadChart() {
         <div class="empty-state">
           <div class="empty-state-icon">🎵</div>
           <p>Пока нет проголосованных треков</p>
-          <p style="margin-top:0.5rem;font-size:0.85rem;">Станьте первым, кто проголосует!</p>
+          <p style="margin-top:0.5rem;font-size:0.85rem;">Станьте первым, кто проголосует на <a href="/">главной странице</a>!</p>
         </div>
       `;
       return;
@@ -529,49 +348,6 @@ async function loadChart() {
   }
 }
 
-// Отправить голос
-async function sendVote() {
-  if (!currentSong) {
-    await getCurrentSong();
-  }
-  
-  const btn = document.getElementById('vote-btn');
-  const result = document.getElementById('vote-result');
-  
-  btn.disabled = true;
-  btn.innerHTML = '<span>⏳</span><span>Отправка голоса...</span>';
-  
-  result.classList.remove('show', 'success', 'warning');
-  
-  try {
-    const res = await fetch(`${API_URL}/vote`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(currentSong)
-    });
-    
-    const data = await res.json();
-    
-    if (res.ok) {
-      result.textContent = `✓ Ваш голос учтён! Всего голосов за этот трек: ${data.votes}`;
-      result.className = 'vote-result success show';
-      setTimeout(() => {
-        loadChart();
-      }, 500);
-    } else {
-      result.textContent = data.error || 'Не удалось проголосовать';
-      result.className = 'vote-result warning show';
-    }
-  } catch (err) {
-    result.textContent = '⚠️ Ошибка соединения с сервером. Попробуйте позже.';
-    result.className = 'vote-result warning show';
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<span>👍</span><span>Проголосовать за этот трек</span>';
-  }
-}
-
-// Вспомогательные функции
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
@@ -587,13 +363,8 @@ function pluralize(count) {
   return 'голосов';
 }
 
-// Запуск
-getCurrentSong();
 loadChart();
-
-// Автообновление
-setInterval(getCurrentSong, 30000); // Каждые 30 секунд
-setInterval(loadChart, 60000);      // Каждую минуту
+setInterval(loadChart, 60000);
 </script>
 
 </body>
