@@ -135,6 +135,44 @@
     gap: 0.5rem;
   }
 
+  /* Стили вкладок — подхватываются классом .period-tab */
+  .period-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+
+  .period-tab {
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.45rem 1rem;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
+  }
+
+  .period-tab:hover {
+    color: var(--text);
+    background: var(--surface-raised);
+  }
+
+  .period-tab.active {
+    color: var(--bg);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .period-range {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.9rem;
+  }
+
   .chart-list {
     display: flex;
     flex-direction: column;
@@ -264,6 +302,10 @@
     .rank.top-3 {
       font-size: 1.3rem;
     }
+
+    .chart-section {
+      padding: 1.25rem;
+    }
   }
 </style>
 </head>
@@ -283,11 +325,15 @@
 <div class="container">
   <header class="page-header">
     <h1>🏆 ХИТ-ПАРАД AIFM</h1>
-    <p class="subtitle">Топ-20 самых популярных треков по голосам слушателей</p>
+    <p class="subtitle">Топ-20 треков по голосам слушателей — за неделю, прошлую неделю, месяц и год</p>
   </header>
 
   <section class="chart-section">
     <h2>🎵 Топ-20 треков</h2>
+
+    <div class="period-tabs" id="chart-tabs" role="tablist" aria-label="Период хит-парада"></div>
+    <div class="period-range" id="chart-range"></div>
+
     <div class="chart-list" id="chart-list">
       <div class="loading">Загрузка рейтинга...</div>
     </div>
@@ -300,71 +346,135 @@
 
 <script>
 const API_URL = 'https://aifm-vote.pesnibulgara.workers.dev';
+const REFRESH_MS = 60000;
 
-async function loadChart() {
-  const chartList = document.getElementById('chart-list');
-  
-  try {
-    const res = await fetch(`${API_URL}/chart`);
-    const data = await res.json();
-    
-    if (!data.chart || data.chart.length === 0) {
-      chartList.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-state-icon">🎵</div>
-          <p>Пока нет проголосованных треков</p>
-          <p style="margin-top:0.5rem;font-size:0.85rem;">Станьте первым, кто проголосует на <a href="/">главной странице</a>!</p>
-        </div>
-      `;
-      return;
-    }
-    
-    chartList.innerHTML = data.chart.map((song, index) => {
-      const rank = index + 1;
-      let rankClass = '';
-      if (rank === 1) rankClass = 'top-1';
-      else if (rank === 2) rankClass = 'top-2';
-      else if (rank === 3) rankClass = 'top-3';
-      
-      return `
-        <div class="chart-item">
-          <div class="rank ${rankClass}">${rank}</div>
-          <div class="chart-song">
-            <div class="chart-title">${escapeHtml(song.title)}</div>
-            <div class="chart-artist">${escapeHtml(song.artist)}</div>
-          </div>
-          <div class="votes">${song.votes} ${pluralize(song.votes)}</div>
-        </div>
-      `;
-    }).join('');
-  } catch (err) {
-    console.error('Ошибка загрузки рейтинга:', err);
-    chartList.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">⚠️</div>
-        <p>Не удалось загрузить рейтинг</p>
-      </div>
-    `;
-  }
+/* Неделя считается с субботы 00:00 по московскому времени.
+   «Текущая неделя» — та, что идёт сейчас; «прошлая неделя» — закрытая,
+   её и объявляют в субботнем выпуске. */
+const TABS = [
+  { key: 'week',      label: 'Текущая неделя' },
+  { key: 'last_week', label: 'Прошлая неделя' },
+  { key: 'month',     label: 'Месяц' },
+  { key: 'year',      label: 'Год' },
+];
+
+let currentPeriod = 'week';
+let allData = null;
+let loading = false;
+
+/* ------------------------------- вкладки ------------------------------- */
+
+function renderTabs() {
+  const box = document.getElementById('chart-tabs');
+  box.innerHTML = TABS.map(t => {
+    const active = t.key === currentPeriod;
+    return `<button class="period-tab${active ? ' active' : ''}" role="tab"
+              aria-selected="${active ? 'true' : 'false'}"
+              data-period="${t.key}">${t.label}</button>`;
+  }).join('');
+
+  box.querySelectorAll('.period-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const period = btn.dataset.period;
+      if (period === currentPeriod) return;
+      currentPeriod = period;
+      renderTabs();
+      renderChart();
+    });
+  });
 }
+
+/* -------------------------------- список -------------------------------- */
 
 function escapeHtml(text) {
   const div = document.createElement('div');
-  div.textContent = text;
+  div.textContent = text == null ? '' : text;
   return div.innerHTML;
 }
 
 function pluralize(count) {
   const mod10 = count % 10;
   const mod100 = count % 100;
-  
   if (mod10 === 1 && mod100 !== 11) return 'голос';
   if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return 'голоса';
   return 'голосов';
 }
 
+function renderChart() {
+  const chartList = document.getElementById('chart-list');
+  const rangeEl = document.getElementById('chart-range');
+  if (!allData) return;
+
+  const songs = allData[currentPeriod] || [];
+  const range = (allData.ranges[currentPeriod] || {}).label || '';
+  rangeEl.textContent = range;
+
+  if (!songs.length) {
+    chartList.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">🎵</div>
+        <p>Пока нет проголосованных треков за этот период</p>
+        <p style="margin-top:0.5rem;font-size:0.85rem;">Станьте первым, кто проголосует на <a href="/">главной странице</a>!</p>
+      </div>
+    `;
+    return;
+  }
+
+  chartList.innerHTML = songs.map((song, index) => {
+    const rank = index + 1;
+    let rankClass = '';
+    if (rank === 1) rankClass = 'top-1';
+    else if (rank === 2) rankClass = 'top-2';
+    else if (rank === 3) rankClass = 'top-3';
+
+    return `
+      <div class="chart-item">
+        <div class="rank ${rankClass}">${rank}</div>
+        <div class="chart-song">
+          <div class="chart-title">${escapeHtml(song.title)}</div>
+          <div class="chart-artist">${escapeHtml(song.artist)}</div>
+        </div>
+        <div class="votes">${song.votes} ${pluralize(song.votes)}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ------------------------------- загрузка ------------------------------- */
+
+async function loadChart() {
+  if (loading) return;
+  loading = true;
+
+  try {
+    const res = await fetch(`${API_URL}/chart`);
+    const data = await res.json();
+
+    allData = {
+      week:      data.week || [],
+      last_week: data.last_week || [],
+      month:     data.month || [],
+      year:      data.year || [],
+      ranges:    data.ranges || {},
+    };
+
+    renderChart();
+  } catch (err) {
+    console.error('Ошибка загрузки рейтинга:', err);
+    document.getElementById('chart-list').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">⚠️</div>
+        <p>Не удалось загрузить рейтинг</p>
+      </div>
+    `;
+  } finally {
+    loading = false;
+  }
+}
+
+renderTabs();
 loadChart();
-setInterval(loadChart, 60000);
+setInterval(loadChart, REFRESH_MS);
 </script>
 
 </body>
