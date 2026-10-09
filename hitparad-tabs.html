@@ -1,0 +1,147 @@
+<!--
+  ВКЛАДКИ ДЛЯ ХИТ-ПАРАДА
+  =====================
+  Как поставить:
+    1. Откройте aifm.su/hitparad.html в редакторе.
+    2. Найдите блок <div id="chart-list"> ... </div> и добавьте ПЕРЕД ним строку <div id="chart-tabs"></div>
+       (либо просто вставьте весь блок ниже туда, где сейчас находится список).
+    3. В конце файла замените старый <script> целиком на этот.
+    4. Сохраните — GitHub Pages обновит страницу через минуту.
+
+  Никаких дополнительных стилей не нужно: всё оформлено inline.
+-->
+
+<div id="chart-tabs" style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.25rem;"></div>
+<div id="chart-period" style="text-align:center;font-size:0.85rem;opacity:0.7;margin-bottom:0.75rem;"></div>
+<div id="chart-list" class="chart-list"><div class="empty-state">Загрузка рейтинга...</div></div>
+
+<script>
+const API_URL = 'https://aifm-vote.pesnibulgara.workers.dev';
+
+const TABS = [
+  { key: 'week',      label: 'Неделя' },
+  { key: 'last_week', label: 'Прошлая неделя' },
+  { key: 'month',     label: 'Месяц' },
+  { key: 'year',      label: 'Год' },
+];
+
+let currentPeriod = 'week';
+let allData = null;
+
+/* ------------------------------- вкладки ------------------------------- */
+
+function renderTabs() {
+  const box = document.getElementById('chart-tabs');
+  box.innerHTML = TABS.map(t => {
+    const active = t.key === currentPeriod;
+    const style = [
+      'padding:0.45rem 1rem',
+      'border-radius:999px',
+      'border:1px solid ' + (active ? 'var(--accent)' : 'rgba(255,255,255,0.15)'),
+      'background:' + (active ? 'var(--accent)' : 'transparent'),
+      'color:' + (active ? 'var(--bg)' : 'inherit'),
+      'cursor:pointer',
+      'font-size:0.85rem',
+      'font-family:inherit',
+    ].join(';');
+    return `<button style="${style}" data-period="${t.key}">${t.label}</button>`;
+  }).join('');
+
+  box.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentPeriod = btn.dataset.period;
+      renderTabs();
+      renderChart();
+    });
+  });
+}
+
+/* -------------------------------- список -------------------------------- */
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text == null ? '' : text;
+  return div.innerHTML;
+}
+
+function pluralize(count) {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return 'голос';
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return 'голоса';
+  return 'голосов';
+}
+
+function renderChart() {
+  const chartList = document.getElementById('chart-list');
+  const periodEl = document.getElementById('chart-period');
+
+  if (!allData) return;
+
+  const songs = allData[currentPeriod] || [];
+  const range = (allData.ranges && allData.ranges[currentPeriod] && allData.ranges[currentPeriod].label) || '';
+  periodEl.textContent = range ? range : '';
+
+  if (!songs.length) {
+    chartList.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">🎵</div>
+        <p>Пока нет проголосованных треков</p>
+        <p style="margin-top:0.5rem;font-size:0.85rem;">Станьте первым, кто проголосует на <a href="/">главной странице</a>!</p>
+      </div>
+    `;
+    return;
+  }
+
+  chartList.innerHTML = songs.map((song, index) => {
+    const rank = index + 1;
+    let rankClass = '';
+    if (rank === 1) rankClass = 'top-1';
+    else if (rank === 2) rankClass = 'top-2';
+    else if (rank === 3) rankClass = 'top-3';
+
+    return `
+      <div class="chart-item">
+        <div class="rank ${rankClass}">${rank}</div>
+        <div class="chart-song">
+          <div class="chart-title">${escapeHtml(song.title)}</div>
+          <div class="chart-artist">${escapeHtml(song.artist)}</div>
+        </div>
+        <div class="votes">${song.votes} ${pluralize(song.votes)}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ------------------------------- загрузка ------------------------------- */
+
+async function loadChart() {
+  try {
+    const res = await fetch(`${API_URL}/chart`);
+    const data = await res.json();
+
+    allData = {
+      week:      data.week || [],
+      last_week: data.last_week || [],
+      month:     data.month || [],
+      year:      data.year || [],
+      ranges:    data.ranges || {},
+    };
+
+    // при первой загрузке показываем недельный чарт
+    renderChart();
+  } catch (err) {
+    console.error('Ошибка загрузки рейтинга:', err);
+    document.getElementById('chart-list').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">⚠️</div>
+        <p>Не удалось загрузить рейтинг</p>
+      </div>
+    `;
+  }
+}
+
+renderTabs();
+loadChart();
+setInterval(loadChart, 60000);
+</script>
