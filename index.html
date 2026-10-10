@@ -837,6 +837,11 @@
       if (res.ok) {
         result.textContent = `✓ Ваш голос учтён! Всего голосов за этот трек: ${data.votes}`;
         result.className = 'vote-result success show';
+        updateNowPlaying();
+      } else if (res.status === 409) {
+        result.textContent = 'Трек уже сменился — обновите страницу и голосуйте за новый.';
+        result.className = 'vote-result warning show';
+        updateNowPlaying();
       } else {
         result.textContent = data.error || 'Не удалось проголосовать';
         result.className = 'vote-result warning show';
