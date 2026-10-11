@@ -364,3 +364,78 @@ setInterval(() => {
   }
 }, 1000);
 setInterval(renderSchedule, 30000);
+
+/* ===== Голосование за текущий трек =====
+   Эндпоинт тот же, что и на сайте (aifm.su).
+   Отправляем { title, artist } — ровно тот формат, что понимает воркер. */
+const VOTE_API = "https://aifm-vote.pesnibulgara.workers.dev/api/vote";
+
+const voteBtnEl = document.getElementById("voteBtn");
+const voteResultEl = document.getElementById("voteResult");
+
+function voteTrack() {
+  const title = (nowPlaying && nowPlaying.title ? nowPlaying.title : "").trim();
+  const artist = (nowPlaying && nowPlaying.artist ? nowPlaying.artist : "").trim();
+  const placeholder = !title || title === "Radio AI FM";
+  return { title, artist, placeholder };
+}
+
+function resetVoteBtn() {
+  if (!voteBtnEl) return;
+  voteBtnEl.disabled = false;
+  voteBtnEl.innerHTML = '<span aria-hidden="true">👍</span><span>Проголосовать за этот трек</span>';
+}
+
+async function sendVote() {
+  if (!voteBtnEl || !voteResultEl) return;
+
+  let track = voteTrack();
+  if (track.placeholder) {
+    await fetchNowPlaying();
+    track = voteTrack();
+  }
+  if (track.placeholder) {
+    voteResultEl.textContent = "Определяем трек — попробуйте через пару секунд.";
+    voteResultEl.className = "vote-result warning show";
+    return;
+  }
+
+  voteBtnEl.disabled = true;
+  voteBtnEl.innerHTML = '<span aria-hidden="true">⏳</span><span>Отправка голоса…</span>';
+  voteResultEl.textContent = "";
+  voteResultEl.className = "vote-result";
+
+  try {
+    const res = await fetch(VOTE_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: track.title, artist: track.artist })
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (res.ok) {
+      voteResultEl.textContent = "✓ Ваш голос учтён! Всего голосов за этот трек: " + (data.votes != null ? data.votes : "—");
+      voteResultEl.className = "vote-result success show";
+      voteBtnEl.innerHTML = '<span aria-hidden="true">✓</span><span>Спасибо за голос</span>';
+      setTimeout(resetVoteBtn, 4000);
+      return;
+    }
+
+    if (res.status === 409) {
+      voteResultEl.textContent = "Трек уже сменился — голосуйте за новый.";
+      voteResultEl.className = "vote-result warning show";
+    } else {
+      voteResultEl.textContent = data.error || "Не удалось проголосовать.";
+      voteResultEl.className = "vote-result warning show";
+    }
+  } catch (err) {
+    voteResultEl.textContent = "Нет связи с сервером голосования.";
+    voteResultEl.className = "vote-result warning show";
+  }
+
+  resetVoteBtn();
+}
+
+if (voteBtnEl) {
+  voteBtnEl.addEventListener("click", sendVote);
+}

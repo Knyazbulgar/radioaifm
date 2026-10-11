@@ -1,4 +1,4 @@
-const CACHE = "aifm-v1";
+const CACHE = "aifm-v2";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -36,6 +36,7 @@ self.addEventListener("fetch", (event) => {
 
   // Never cache the live stream or AzuraCast API
   if (
+    url.hostname === "aifm-vote.pesnibulgara.workers.dev" ||
     url.hostname === "radio.aifm.su" ||
     url.pathname.includes("/listen/") ||
     url.pathname.includes("/api/")

@@ -402,3 +402,47 @@ a { color: var(--accent); }
 @media (display-mode: standalone) {
   .install-banner { display: none !important; }
 }
+
+/* ===== Голосование за трек ===== */
+.vote-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px 16px;
+  border: none;
+  border-radius: 12px;
+  background: #54b8ff;
+  color: #0a0f1e;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.vote-btn:active:not(:disabled) { transform: scale(0.98); }
+.vote-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.vote-result {
+  display: none;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  text-align: center;
+}
+.vote-result.show { display: block; }
+.vote-result.success {
+  background: rgba(46, 204, 113, 0.14);
+  border: 1px solid rgba(46, 204, 113, 0.55);
+  color: #2ecc71;
+}
+.vote-result.warning {
+  background: rgba(230, 126, 34, 0.14);
+  border: 1px solid rgba(230, 126, 34, 0.55);
+  color: #e67e22;
+}
