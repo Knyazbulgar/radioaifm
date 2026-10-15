@@ -203,14 +203,6 @@
         .slice()
         .sort(function (a, b) { return toOrdinal(b.date) - toOrdinal(a.date); })
         .forEach(function (n) { grid.appendChild(card(n)); });
-
-      // считаем новости за текущий год для подписи
-      const y = new Date().getFullYear();
-      const cnt = items.filter(function (n) {
-        return String(n.date || "").slice(-4) === String(y);
-      }).length;
-      const sub = document.querySelector(".page-sub");
-      if (sub && cnt) sub.textContent = "Что происходит на Radio AI FM · новостей за " + y + " год: " + cnt;
     })
     .catch(function (e) {
       grid.innerHTML = "";
