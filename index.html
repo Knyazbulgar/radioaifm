@@ -629,11 +629,7 @@
 <section id="news">
   <h2>Последние события</h2>
   <p class="section-sub">Новости</p>
-  <div class="news-grid">
-    <div class="news-card"><span class="news-tag">🚀 Новость</span><time class="news-date">01.01.2025</time><h3>Radio AI FM официально запущена!</h3><p>Первая независимая радиостанция в России, созданная полностью на основе ИИ, начинает вещание.</p></div>
-    <div class="news-card"><span class="news-tag">🎙️ Анонс</span><time class="news-date">05.01.2025</time><h3>Новые программы в январе</h3><p>Добавляем новые тематические программы: Cosmos Late Night, AI Микс и Утренний запуск с AI-ведущими.</p></div>
-    <div class="news-card"><span class="news-tag">✨ Обновление</span><time class="news-date">10.01.2025</time><h3>Улучшено качество вещания</h3><p>Поток стабильнее, задержка меньше, качество звука — 192 kbps MP3.</p></div>
-  </div>
+  <div class="news-grid" id="newsGrid"></div>
 </section>
 
 <section id="team">
@@ -957,6 +953,75 @@
 
   updateScheduleBadges();
   setInterval(updateScheduleBadges, 60000);
+</script>
+<script>
+/* Новости: данные лежат в news.json — правьте только его */
+(function () {
+  "use strict";
+  const NEWS_URL = "./news.json";
+
+  function toOrdinal(s) {
+    const m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(String(s || "").trim());
+    if (!m) return 0;
+    const d = +m[1], mo = +m[2], y = +m[3];
+    if (mo < 1 || mo > 12 || d < 1 || d > 31) return 0;
+    return Date.UTC(y, mo - 1, d);
+  }
+
+  function card(n) {
+    const el = document.createElement("div");
+    el.className = "news-card";
+
+    const tag = document.createElement("span");
+    tag.className = "news-tag";
+    tag.textContent = n.tag || "";
+
+    const date = document.createElement("time");
+    date.className = "news-date";
+    date.textContent = n.date || "";
+
+    const h3 = document.createElement("h3");
+    h3.textContent = n.title || "";
+
+    const p = document.createElement("p");
+    p.textContent = n.text || "";
+
+    el.appendChild(tag); el.appendChild(date);
+    el.appendChild(h3);  el.appendChild(p);
+    return el;
+  }
+
+  function note(text) {
+    const el = document.createElement("div");
+    el.className = "news-card";
+    const p = document.createElement("p");
+    p.textContent = text;
+    el.appendChild(p);
+    return el;
+  }
+
+  const grid = document.getElementById("newsGrid");
+  if (!grid) return;
+
+  fetch(NEWS_URL, { cache: "no-store" })
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function (items) {
+      if (!Array.isArray(items)) throw new Error("news.json должен содержать массив");
+      grid.innerHTML = "";
+      if (!items.length) { grid.appendChild(note("Новостей пока нет.")); return; }
+      items
+        .slice()
+        .sort(function (a, b) { return toOrdinal(b.date) - toOrdinal(a.date); })
+        .forEach(function (n) { grid.appendChild(card(n)); });
+    })
+    .catch(function (e) {
+      grid.innerHTML = "";
+      grid.appendChild(note("Не удалось загрузить новости: " + e.message));
+    });
+})();
 </script>
 </body>
 </html>
