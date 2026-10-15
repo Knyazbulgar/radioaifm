@@ -186,6 +186,7 @@
   .news-date { font-size: 0.75rem; color: var(--muted); }
   .news-card h3 { font-size: 1rem; }
   .news-card p { font-size: 0.875rem; color: var(--muted); }
+  .news-more { margin-top: 1.25rem; text-align: right; font-size: 0.9rem; }
 
   .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
   .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem 1.25rem; text-align: center; }
@@ -523,7 +524,7 @@
   <div class="nav-logo">📡 Radio AI FM</div>
   <ul class="nav-links">
     <li><a href="#schedule">Расписание</a></li>
-    <li><a href="#news">Новости</a></li>
+    <li><a href="/news.html">Новости</a></li>
     <li><a href="#team">Ведущие</a></li>
     <li><a href="#contacts">Контакты</a></li>
     <li><a href="/hitparad.html">Хит-парад</a></li>
@@ -630,6 +631,7 @@
   <h2>Последние события</h2>
   <p class="section-sub">Новости</p>
   <div class="news-grid" id="newsGrid"></div>
+  <p class="news-more"><a href="/news.html">Все новости →</a></p>
 </section>
 
 <section id="team">
@@ -703,7 +705,7 @@
 <footer>
   <div class="footer-links">
     <a href="#schedule">Расписание</a>
-    <a href="#news">Новости</a>
+    <a href="/news.html">Новости</a>
     <a href="#team">Ведущие</a>
     <a href="#contacts">Контакты</a>
   </div>
@@ -1015,6 +1017,7 @@
       items
         .slice()
         .sort(function (a, b) { return toOrdinal(b.date) - toOrdinal(a.date); })
+        .slice(0, 3)   /* на главной — только три свежие, остальные на /news.html */
         .forEach(function (n) { grid.appendChild(card(n)); });
     })
     .catch(function (e) {
