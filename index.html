@@ -241,114 +241,6 @@
     .footer-copy { text-align: left; }
   }
 
-  .radio-hero {
-    position: relative !important;
-    box-sizing: border-box !important;
-    display: flex !important;
-    align-items: center !important;
-    width: min(1350px, calc(100% - 40px)) !important;
-    min-height: 430px !important;
-    margin: 0 auto 40px !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    border-radius: 22px !important;
-    background: #050e27 !important;
-    text-align: left !important;
-  }
-
-  .radio-hero__image {
-    position: absolute !important;
-    inset: 0 !important;
-    z-index: 0 !important;
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    object-position: center !important;
-  }
-
-  .radio-hero__overlay {
-    position: absolute !important;
-    inset: 0 !important;
-    z-index: 1 !important;
-    pointer-events: none !important;
-    background: linear-gradient(
-      90deg,
-      rgba(5, 14, 39, 0.96) 0%,
-      rgba(5, 14, 39, 0.78) 38%,
-      rgba(5, 14, 39, 0.25) 72%,
-      rgba(5, 14, 39, 0.08) 100%
-    ) !important;
-  }
-
-  .radio-hero__content {
-    position: relative !important;
-    z-index: 2 !important;
-    max-width: 590px !important;
-    margin: 0 !important;
-    padding: 56px !important;
-    color: #fff !important;
-    text-align: left !important;
-  }
-
-  .radio-hero__label {
-    margin: 0 0 14px !important;
-    color: #54b8ff !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.18em !important;
-    text-transform: uppercase !important;
-  }
-
-  .radio-hero__title {
-    margin: 0 !important;
-    color: #fff !important;
-    font-size: clamp(42px, 7vw, 82px) !important;
-    font-weight: 800 !important;
-    line-height: 0.95 !important;
-    letter-spacing: -0.04em !important;
-    text-align: left !important;
-    text-shadow: 0 0 28px rgba(65, 177, 255, 0.35) !important;
-  }
-
-  .radio-hero__text {
-    max-width: 420px !important;
-    margin: 22px 0 28px !important;
-    color: #c6d8f4 !important;
-    font-size: 18px !important;
-    line-height: 1.5 !important;
-    text-align: left !important;
-  }
-
-  @media (max-width: 700px) {
-    .radio-hero {
-      width: calc(100% - 24px) !important;
-      min-height: 510px !important;
-      align-items: flex-end !important;
-      border-radius: 16px !important;
-    }
-    .radio-hero__image {
-      object-position: 67% center !important;
-    }
-    .radio-hero__overlay {
-      background: linear-gradient(
-        180deg,
-        rgba(5, 14, 39, 0.15) 0%,
-        rgba(5, 14, 39, 0.55) 43%,
-        rgba(5, 14, 39, 0.97) 78%
-      ) !important;
-    }
-    .radio-hero__content {
-      padding: 28px 22px !important;
-    }
-    .radio-hero__title {
-      font-size: 52px !important;
-    }
-    .radio-hero__text {
-      font-size: 16px !important;
-    }
-  }
-
   .ad-section {
     width: 100%;
     padding: 48px 0;
@@ -508,18 +400,6 @@
 </style>
 </head>
 <body>
-
-<section class="radio-hero">
-  <img class="radio-hero__image" src="./hero.jpg" alt="Radio AI FM">
-  <div class="radio-hero__overlay"></div>
-  <div class="radio-hero__content">
-    <div class="radio-hero__label">AI-РАДИО БУДУЩЕГО</div>
-    <h1 class="radio-hero__title">Radio AI FM</h1>
-    <p class="radio-hero__text">
-      Музыка, технологии и голос нового поколения
-    </p>
-  </div>
-</section>
 
 <nav>
   <div class="nav-logo">📡 Radio AI FM</div>
