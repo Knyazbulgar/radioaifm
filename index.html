@@ -186,21 +186,6 @@
   h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.25rem; }
   .section-sub { color: var(--muted); margin-bottom: 2.5rem; font-size: 0.95rem; }
 
-  .schedule-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .schedule-item {
-    display: flex; align-items: center; gap: 1rem;
-    padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-  }
-  .schedule-item:last-child { border-bottom: none; }
-  .schedule-item:hover { background: var(--surface-raised); }
-  .sched-time { font-size: 0.85rem; color: var(--muted); width: 3.5rem; flex-shrink: 0; font-variant-numeric: tabular-nums; }
-  .sched-info { flex: 1; }
-  .sched-info strong { display: block; font-size: 0.95rem; }
-  .sched-info span { font-size: 0.8rem; color: var(--muted); }
-  .badge-live { font-size: 0.7rem; font-weight: 700; background: var(--live); color: oklch(14% 0.01 260); padding: 0.15rem 0.5rem; border-radius: 99px; }
-  .badge-soon { font-size: 0.7rem; font-weight: 600; background: var(--surface-raised); color: var(--muted); padding: 0.15rem 0.5rem; border-radius: 99px; }
-
   .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
   .news-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
   .news-tag { font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
@@ -424,7 +409,6 @@
 <nav>
   <div class="nav-logo">📡 Radio AI FM</div>
   <ul class="nav-links">
-    <li><a href="#schedule">Расписание</a></li>
     <li><a href="/news.html">Новости</a></li>
     <li><a href="#team">Ведущие</a></li>
     <li><a href="#contacts">Контакты</a></li>
@@ -526,18 +510,6 @@
   </div>
 </section>
 
-<section id="schedule">
-  <h2>Эфирная сетка</h2>
-  <p class="section-sub">Расписание</p>
-  <div class="schedule-list" role="list">
-    <div class="schedule-item" role="listitem"><span class="sched-time">07:00</span><div class="sched-info"><strong>Утренний запуск</strong><span>Алекс</span></div></div>
-    <div class="schedule-item" role="listitem"><span class="sched-time">11:00</span><div class="sched-info"><strong>Дневной поток</strong><span>Мария</span></div></div>
-    <div class="schedule-item" role="listitem"><span class="sched-time">15:00</span><div class="sched-info"><strong>AI Микс</strong><span>Вика</span></div></div>
-    <div class="schedule-item" role="listitem"><span class="sched-time">19:00</span><div class="sched-info"><strong>Вечерняя атмосфера</strong><span>Алекс</span></div></div>
-    <div class="schedule-item" role="listitem"><span class="sched-time">23:00</span><div class="sched-info"><strong>Ночная волна</strong><span>Мария</span></div></div>
-    <div class="schedule-item" role="listitem"><span class="sched-time">03:00</span><div class="sched-info"><strong>Cosmos Late Night</strong><span>Вика</span></div></div>
-  </div>
-</section>
  
 <section id="news">
   <h2>Последние события</h2>
@@ -616,7 +588,6 @@
 
 <footer>
   <div class="footer-links">
-    <a href="#schedule">Расписание</a>
     <a href="/news.html">Новости</a>
     <a href="#team">Ведущие</a>
     <a href="#contacts">Контакты</a>
@@ -808,65 +779,6 @@
   updateNowPlaying();
   setInterval(updateNowPlaying, 15000);
 
-  function updateScheduleBadges() {
-    const now = new Date();
-    const moscowOffset = 3 * 60;
-    const localOffset = now.getTimezoneOffset();
-    const moscowTime = new Date(now.getTime() + (moscowOffset + localOffset) * 60000);
-    const hours = moscowTime.getHours();
-    const minutes = moscowTime.getMinutes();
-    const currentMinutes = hours * 60 + minutes;
-
-    const schedule = [
-      { start: 7 * 60, name: 'Утренний запуск' },
-      { start: 11 * 60, name: 'Дневной поток' },
-      { start: 15 * 60, name: 'AI Микс' },
-      { start: 19 * 60, name: 'Вечерняя атмосфера' },
-      { start: 23 * 60, name: 'Ночная волна' },
-      { start: 3 * 60, name: 'Cosmos Late Night' }
-    ];
-
-    let currentIdx = -1;
-    for (let i = 0; i < schedule.length; i++) {
-      const nextIdx = (i + 1) % schedule.length;
-      const start = schedule[i].start;
-      const end = schedule[nextIdx].start;
-
-      if (start < 7 * 60 && currentMinutes >= start && currentMinutes < 7 * 60) {
-        currentIdx = i;
-        break;
-      }
-      if (currentMinutes >= start && (end > start ? currentMinutes < end : true)) {
-        currentIdx = i;
-        break;
-      }
-    }
-
-    if (currentIdx === -1 && currentMinutes >= 23 * 60) {
-      currentIdx = 4;
-    }
-
-    const nextIdx = currentIdx !== -1 ? (currentIdx + 1) % schedule.length : 0;
-
-    document.querySelectorAll('.schedule-item .badge-live, .schedule-item .badge-soon').forEach(b => b.remove());
-
-    const items = document.querySelectorAll('.schedule-item');
-    if (currentIdx !== -1 && items[currentIdx]) {
-      const badge = document.createElement('span');
-      badge.className = 'badge-live';
-      badge.textContent = 'В ЭФИРЕ';
-      items[currentIdx].appendChild(badge);
-    }
-    if (items[nextIdx]) {
-      const badge = document.createElement('span');
-      badge.className = 'badge-soon';
-      badge.textContent = 'СКОРО';
-      items[nextIdx].appendChild(badge);
-    }
-  }
-
-  updateScheduleBadges();
-  setInterval(updateScheduleBadges, 60000);
 </script>
 <script>
 /* Новости: данные лежат в news.json — правьте только его */
