@@ -440,11 +440,12 @@
         <span id="vol-label">80%</span>
       </div>
     </div>
-    <button class="vote-btn" id="voteBtn" onclick="sendVote()">
+    <button class="vote-btn" id="voteBtn" onclick="sendVote()" disabled>
       <span>👍</span>
       <span>Проголосовать за этот трек</span>
     </button>
     <div class="vote-result" id="voteResult"></div>
+    <p class="status-text" id="voteAvailability" aria-live="polite">Проверяем, что сейчас звучит в эфире…</p>
     <div class="status-text" id="statusText" aria-live="polite"></div>
   </div>
 
@@ -609,7 +610,7 @@
 <script>
   const STREAM_URL = 'https://radio.aifm.su/listen/aifm/radio.mp3';
   const API_URL = 'https://aifm-vote.pesnibulgara.workers.dev/api';
-  const NOWPLAYING_URL = 'https://radio.aifm.su/api/nowplaying/aifm';
+  const NOWPLAYING_URL = 'https://aifm-vote.pesnibulgara.workers.dev/api/web-voting-state';
   
   const audio = document.getElementById('radioAudio');
   const btn = document.getElementById('playBtn');
@@ -620,6 +621,16 @@
   
   let playing = false;
   let currentSong = null;
+  let voteAllowed = false;
+  let voteSending = false;
+  let nowRequest = 0;
+  function setVoteAvailability(allowed, reason = '') {
+    voteAllowed = allowed;
+    const voteBtn = document.getElementById('voteBtn');
+    voteBtn.disabled = voteSending || !voteAllowed;
+    voteBtn.innerHTML = voteSending ? '<span>⏳</span><span>Отправка голоса...</span>' : voteAllowed ? '<span>👍</span><span>Проголосовать за этот трек</span>' : '<span>Голосование временно недоступно</span>';
+    document.getElementById('voteAvailability').textContent = reason;
+  }
 
   function togglePlay() {
     if (playing) {
@@ -667,9 +678,13 @@
   }
 
   async function updateNowPlaying() {
+    const requestId = ++nowRequest;
     try {
-      const res = await fetch(NOWPLAYING_URL);
+      const res = await fetch(NOWPLAYING_URL, {cache: 'no-store'});
       const data = await res.json();
+      if (requestId !== nowRequest) return;
+      setVoteAvailability(res.ok && data.web_voting?.allowed === true, data.web_voting?.reason || '');
+      if (!res.ok) return;
       const artist = data.now_playing?.song?.artist || '';
       const title  = data.now_playing?.song?.title  || '';
       const artUrl = data.now_playing?.song?.art;
@@ -690,12 +705,19 @@
         songCoverEl.textContent = '🎵';
       }
     } catch {
+      if (requestId === nowRequest) setVoteAvailability(false, 'Не удалось проверить эфир. Попробуйте чуть позже.');
     }
   }
 
   async function sendVote() {
-    if (!currentSong) {
-      await updateNowPlaying();
+    if (voteSending) return;
+    voteSending = true;
+    setVoteAvailability(voteAllowed);
+    await updateNowPlaying();
+    if (!voteAllowed || !currentSong) {
+      voteSending = false;
+      setVoteAvailability(false, document.getElementById('voteAvailability').textContent);
+      return;
     }
     
     const voteBtn = document.getElementById('voteBtn');
@@ -731,8 +753,8 @@
       result.textContent = '⚠️ Ошибка соединения с сервером. Попробуйте позже.';
       result.className = 'vote-result warning show';
     } finally {
-      voteBtn.disabled = false;
-      voteBtn.innerHTML = '<span>👍</span><span>Проголосовать за этот трек</span>';
+      voteSending = false;
+      await updateNowPlaying();
     }
   }
 
