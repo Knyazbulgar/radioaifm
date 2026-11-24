@@ -108,7 +108,6 @@
   .status-text { font-size: 0.8rem; color: var(--muted); text-align: center; min-height: 1.2em; }
 
   .vote-btn {
-    text-decoration: none;
     width: 100%;
     background: var(--accent);
     color: var(--bg);
@@ -441,11 +440,11 @@
         <span id="vol-label">80%</span>
       </div>
     </div>
-    <a class="vote-btn" id="voteBtn" href="https://t.me/aifm_hitparad_bot" target="_blank" rel="noopener">
-      <span aria-hidden="true">👍</span>
-      <span>Голосовать в Telegram</span>
-    </a>
-    <p class="status-text">Для участников группы Radio AI FM. Бот проверит подписку перед голосованием.</p>
+    <button class="vote-btn" id="voteBtn" onclick="sendVote()">
+      <span>👍</span>
+      <span>Проголосовать за этот трек</span>
+    </button>
+    <div class="vote-result" id="voteResult"></div>
     <div class="status-text" id="statusText" aria-live="polite"></div>
   </div>
 
@@ -609,6 +608,7 @@
 
 <script>
   const STREAM_URL = 'https://radio.aifm.su/listen/aifm/radio.mp3';
+  const API_URL = 'https://aifm-vote.pesnibulgara.workers.dev/api';
   const NOWPLAYING_URL = 'https://radio.aifm.su/api/nowplaying/aifm';
   
   const audio = document.getElementById('radioAudio');
@@ -690,6 +690,49 @@
         songCoverEl.textContent = '🎵';
       }
     } catch {
+    }
+  }
+
+  async function sendVote() {
+    if (!currentSong) {
+      await updateNowPlaying();
+    }
+    
+    const voteBtn = document.getElementById('voteBtn');
+    const result = document.getElementById('voteResult');
+    
+    voteBtn.disabled = true;
+    voteBtn.innerHTML = '<span>⏳</span><span>Отправка голоса...</span>';
+    
+    result.classList.remove('show', 'success', 'warning');
+    
+    try {
+      const res = await fetch(`${API_URL}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(currentSong)
+      });
+      
+      const data = await res.json();
+      
+      if (res.ok) {
+        result.textContent = `✓ Ваш голос учтён! Всего голосов за этот трек: ${data.votes}`;
+        result.className = 'vote-result success show';
+        updateNowPlaying();
+      } else if (res.status === 409) {
+        result.textContent = 'Трек уже сменился — обновите страницу и голосуйте за новый.';
+        result.className = 'vote-result warning show';
+        updateNowPlaying();
+      } else {
+        result.textContent = data.error || 'Не удалось проголосовать';
+        result.className = 'vote-result warning show';
+      }
+    } catch (err) {
+      result.textContent = '⚠️ Ошибка соединения с сервером. Попробуйте позже.';
+      result.className = 'vote-result warning show';
+    } finally {
+      voteBtn.disabled = false;
+      voteBtn.innerHTML = '<span>👍</span><span>Проголосовать за этот трек</span>';
     }
   }
 
